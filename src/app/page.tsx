@@ -16,8 +16,16 @@ export interface GroupDataInterface {
 
 const App: React.FC = () => {
   const [groupedData, setGroupedData] = useState({});
+  const [userName, setUserName] = useState("Admin");
 
-  const userName = localStorage?.getItem('userEmail')?.split('@')?.[0] || 'Admin';
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const storedUserEmail = localStorage.getItem("userEmail");
+      if (storedUserEmail) {
+        setUserName(storedUserEmail.split("@")[0]);
+      }
+    }
+  }, []);
 
   const dispatch: AppDispatch = useDispatch();
   const { tokens } = useSelector((state: RootState) => state.tokens);
