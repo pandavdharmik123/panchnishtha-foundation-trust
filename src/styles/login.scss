@@ -1,0 +1,106 @@
+.login-container {
+  position: relative;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  z-index: 1;
+  overflow: hidden;
+
+  .background-image {
+    // background-image: url('login.gif');
+    background-size: 87% auto;
+    background-repeat: no-repeat;
+    background-position: 148%;
+    height: 100%;
+    width: 100%;
+    position: absolute;
+    background-color: #f7f7f9;
+    z-index: 0;
+  }
+
+  .secondary-background {
+    // background-image: url('loginBackground.png');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    height: 100%;
+    width: 100%;
+    position: absolute;
+  }
+
+  .login-form {
+    width: 40%;
+    font-size: 24px;
+    display: flex;
+    flex-direction: column;
+    padding: 60px 20px 20px 40px;
+    z-index: 2;
+    margin: 0 auto;
+
+    .company-logo {
+      background-image: url("/images/trust_logo.png");
+      background-repeat: no-repeat;
+      background-position: center;
+      width: 350px;
+      height: 200px;
+      background-size: 100% 100%;
+      margin: auto auto 24px auto;
+
+      img {
+        width: 200px;
+        height: 130px;
+      }
+    }
+
+    h3 {
+      margin-top: 0;
+      margin-bottom: 24px;
+    }
+
+    form {
+      gap: 16px;
+      flex-direction: column;
+      display: flex;
+      .input-wrapper {
+        gap: 4px;
+        flex-direction: column;
+        display: flex;
+
+        .label-text {
+          font-weight: 600;
+          font-size: 16px;
+          color: #392b97;
+        }
+
+        .ant-form-item {
+          margin: 0;
+          input {
+            height: 40px;
+            font-size: 16px;
+          }
+        }
+      }
+
+      .login-button, .login-button:hover {
+        height: 40px;
+        font-size: 16px;
+        margin-top: 8px;
+        background-color: #e9ab5a;
+        font-weight: 700;
+        font-size: 16px;
+      }
+    }
+
+  }
+
+  .footer-section {
+    position: fixed;
+    bottom: 8px;
+    z-index: 3;
+    text-align: center;
+    width: 100%;
+    color: black;
+    z-index: 3;
+    text-align: center;
+  }
+}
