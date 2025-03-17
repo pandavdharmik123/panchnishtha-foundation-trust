@@ -6,7 +6,7 @@ const JWT_SECRET = process.env.JWT_SECRET!;
 
 export const runtime = "nodejs";
 
-const protectedRoutes = ["/", "/users", "/api/private"];
+const protectedRoutes = ['/', "/users", "/tokens"];
 const publicRoutes = ["/login", "/signup"];
 
 export async function middleware(req: NextRequest) {
@@ -34,21 +34,21 @@ export async function middleware(req: NextRequest) {
   }
 
   // ✅ Ensure protected API routes require Authorization header
-  if (req.nextUrl.pathname.startsWith("/api")) {
-    const authHeader = req.headers.get("Authorization");
+  // if (req.nextUrl.pathname.startsWith("/api")) {
+  //   const authHeader = req.headers.get("Authorization");
 
-    if (!authHeader || !authHeader.startsWith("Bearer ")) {
-      return NextResponse.json({ error: "Unauthorized: Missing Authorization Header" }, { status: 401 });
-    }
+  //   if (!authHeader || !authHeader.startsWith("Bearer ")) {
+  //     return NextResponse.json({ error: "Unauthorized: Missing Authorization Header" }, { status: 401 });
+  //   }
 
-    const token = authHeader.split(" ")[1]; // Extract token from "Bearer TOKEN"
-    try {
-      await verify(token, JWT_SECRET);
-      return NextResponse.next();
-    } catch (error) {
-      return NextResponse.json({ error: "Unauthorized: Invalid Token" }, { status: 403 });
-    }
-  }
+  //   const token = authHeader.split(" ")[1]; // Extract token from "Bearer TOKEN"
+  //   try {
+  //     await verify(token, JWT_SECRET);
+  //     return NextResponse.next();
+  //   } catch (error) {
+  //     return NextResponse.json({ error: "Unauthorized: Invalid Token" }, { status: 403 });
+  //   }
+  // }
 
   // ✅ Protect private routes: Redirect unauthenticated users to /login
   if (protectedRoutes.some((route) => req.nextUrl.pathname.startsWith(route))) {

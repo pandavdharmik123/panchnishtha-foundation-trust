@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { signIn } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 
-export default function LoginPage() {
+export default function Users() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
@@ -29,7 +29,7 @@ export default function LoginPage() {
     return (
         <div>
             <h1>users</h1>
-            
+
             {error && <p style={{ color: 'red' }}>{error}</p>}
         </div>
     );

@@ -1,0 +1,37 @@
+.home-container {
+  padding: 16px;
+
+  .welcome-msg {
+    color: #3b2b98;
+  }
+
+  .chart-card-container {
+    margin-top: 16px;
+    .chart-card {
+      display: flex;
+      flex-direction: column;
+      // width: 50%;
+      border: 1px solid #e9e9e9;
+      border-radius: 5px;
+      background-color: #FFF;
+
+      .chart-header {
+        display: flex;
+        justify-content: space-between;
+        border-bottom: 1px solid #e9e9e9;
+        font-size: 18px;
+        padding: 12px 18px;
+        font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+
+        .title-container {
+          display: flex;
+          gap: 12px;
+          align-items: center;
+          .total-text {
+            font-size: 14px;
+          }
+        }
+      }
+    }
+  }
+}

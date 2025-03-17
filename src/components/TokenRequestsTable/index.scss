@@ -1,0 +1,67 @@
+.tokens-table-container {
+  .search-bar-continer {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 8px;
+
+    .date-picker {
+      width: 250px;
+    }
+
+    .create-btn {
+      background-color: #dd2d20;
+      &:hover {
+        background-color: #3a2a97;
+      }
+    }
+  }
+
+  .ant-table-body {
+    overflow: auto !important;
+  }
+  .payment-done-btn, .payment-done-btn:hover {
+    background-color: green !important;
+    color: white !important;
+    border: 0;
+  }
+
+  .ant-pagination {
+    display: none;
+  }
+}
+
+.confirmation-modal {
+  .ant-modal-body {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    
+    .image-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+
+      .success-message {
+        font-size: 24px;
+        font-weight: bold;
+        color: green;
+        font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+      }
+    }
+
+    .token-detail {
+      margin: 12px 0;
+      display: flex;
+      flex-direction: column;
+      padding: 12px;
+      background: #ddfecc;
+      border: 1px solid #23c55c;
+      border-radius: 5px;
+      gap: 8px;
+      font-size: 16px;
+      font-weight: 600;
+    }
+  }
+}

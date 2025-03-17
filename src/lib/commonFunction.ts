@@ -19,3 +19,12 @@ export async function verify(token: string, secret: string) {
  // if its all good, return it, or perhaps just return a boolean
   return payload;
 }
+
+export const documentOptions = [
+  { value: "income_certificate", label: "આવક (Income Certificate)", amount: 100 },
+  { value: "obc_certificate", label: "બક્ષીપંચ (OBC Certificate)", amount: 100 },
+  { value: "non_creamy_layer", label: "નોન ક્રીમી લેયર (Non Creamy Layer)", amount: 300 },
+  { value: "ews_certificate", label: "EWS Certificate", amount: 300 },
+  { value: "other", label: "Other", amount: 0 }, // Amount can be dynamic for "Other"
+];
+

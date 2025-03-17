@@ -13,8 +13,8 @@ const axiosInstance = axios.create({
 // Add an interceptor to attach the token from cookies if available
 axiosInstance.interceptors.request.use(
   (config) => {
-    if (typeof window !== "undefined") {
-      const token = Cookies.get("token"); // Retrieve token from cookies
+    if (typeof window !== "undefined" && document.cookie) {
+      const token = Cookies.get("token");
       if (token) {
         config.headers.Authorization = `Bearer ${token}`;
       }

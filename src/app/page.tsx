@@ -1,95 +1,76 @@
-import Image from "next/image";
-import styles from "./page.module.css";
+'use client';
 
-export default function Home() {
+import React, { useEffect, useState } from 'react';
+import '@/styles/homePage.scss'
+import { isEmpty, startCase } from 'lodash';
+import EChartsComponent from '@/components/TokensChart';
+import { AppDispatch, RootState } from '@/redux/store';
+import { useDispatch, useSelector } from 'react-redux';
+import { getAllTokens } from '@/redux/slices/tokens';
+import { Tooltip } from 'antd';
+import { QuestionCircleOutlined } from '@ant-design/icons';
+
+export interface GroupDataInterface { 
+  [key: string]: { tokenCount: number; totalAmount: number } 
+}
+
+const App: React.FC = () => {
+  const [groupedData, setGroupedData] = useState({});
+
+  const userName = localStorage?.getItem('userEmail')?.split('@')?.[0] || 'Admin';
+
+  const dispatch: AppDispatch = useDispatch();
+  const { tokens } = useSelector((state: RootState) => state.tokens);
+
+  useEffect(() => {
+    dispatch(getAllTokens());
+  }, []);
+
+  useEffect(() => {
+    if(!isEmpty(tokens)) {
+      const groupedData: GroupDataInterface = {};
+      tokens.forEach((entry) => {
+        const dateObj = new Date(entry.createdAt as Date);
+        const dateKey = `${String(dateObj.getDate()).padStart(2, '0')}/${String(dateObj.getMonth() + 1).padStart(2, '0')}/${dateObj.getFullYear()}`;
+  
+        if (!groupedData[dateKey]) {
+          groupedData[dateKey] = { tokenCount: 0, totalAmount: 0 };
+        }
+  
+        groupedData[dateKey].tokenCount += 1; // Count tokens
+        groupedData[dateKey].totalAmount += Number(entry.amount); // Sum amounts
+      });
+      setGroupedData(groupedData);
+    }
+  }, [tokens]);
+
+  const getTotalCountAmount = (data: GroupDataInterface) => {
+    const totalAmount = Object.keys(data).reduce((acc, curr) => acc + data[curr]?.totalAmount, 0) || 0;
+    const totalCounts = Object.keys(data).reduce((acc, curr) => acc + data[curr]?.tokenCount, 0) || 0;
+
+    return { totalAmount, totalCounts }
+  }
+
   return (
-    <div className={styles.page}>
-      <main className={styles.main}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol>
-          <li>
-            Get started by editing <code>src/app/page.tsx</code>.
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
-
-        <div className={styles.ctas}>
-          <a
-            className={styles.primary}
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className={styles.logo}
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-            className={styles.secondary}
-          >
-            Read our docs
-          </a>
+    <div className='home-container'>
+      <h2 className='welcome-msg'>Welcome {startCase(userName)}!</h2>
+      <div className='chart-card-container'>
+        <div className='chart-card'>
+          <div className='chart-header'>
+            <div className='title-container'>
+              <span>Token Statastics</span>
+            </div>
+            <div className='title-container'>
+              <span className='total-text'>Total Tokens: {getTotalCountAmount(groupedData)?.totalCounts}</span>
+              <span className='total-text'>Total Amount: ₹{getTotalCountAmount(groupedData)?.totalAmount}</span>
+            </div>
+          </div>
+          <EChartsComponent groupedData={groupedData}/>
         </div>
-      </main>
-      <footer className={styles.footer}>
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+        <div className='chart-card'></div>
+      </div>
     </div>
   );
-}
+};
+
+export default App;
