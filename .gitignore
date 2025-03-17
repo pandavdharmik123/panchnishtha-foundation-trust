@@ -10,8 +10,11 @@
 !.yarn/releases
 !.yarn/versions
 
+# JetBrains IDE (WebStorm, IntelliJ, etc.)
+.idea/*
+.idea/inspectionProfiles/Project_Default.xml
 
-/.idea/*
+# VS Code
 /.vscode/
 
 # testing
