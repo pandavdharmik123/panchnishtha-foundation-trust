@@ -1,13 +1,13 @@
 'use client';
 
 import React from 'react';
-import { Avatar, Button, Tooltip } from 'antd';
+import { Tooltip } from 'antd';
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from '@/redux/store';
 import { logoutUser } from '@/redux/slices/userSlice';
 import { useRouter } from 'next/navigation';
 import '@/styles/header.scss'
-import { LogoutOutlined, UserOutlined } from '@ant-design/icons';
+import { LogoutOutlined } from '@ant-design/icons';
 
 const HeaderComponent: React.FC = () => {
   const router = useRouter();

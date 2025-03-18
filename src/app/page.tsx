@@ -7,8 +7,6 @@ import EChartsComponent from '@/components/TokensChart';
 import { AppDispatch, RootState } from '@/redux/store';
 import { useDispatch, useSelector } from 'react-redux';
 import { getAllTokens } from '@/redux/slices/tokens';
-import { Tooltip } from 'antd';
-import { QuestionCircleOutlined } from '@ant-design/icons';
 
 export interface GroupDataInterface { 
   [key: string]: { tokenCount: number; totalAmount: number } 
@@ -32,7 +30,7 @@ const App: React.FC = () => {
 
   useEffect(() => {
     dispatch(getAllTokens());
-  }, []);
+  }, [dispatch]);
 
   useEffect(() => {
     if(!isEmpty(tokens)) {
@@ -50,7 +48,7 @@ const App: React.FC = () => {
       });
       setGroupedData(groupedData);
     }
-  }, [tokens]);
+  }, [dispatch, tokens]);
 
   const getTotalCountAmount = (data: GroupDataInterface) => {
     const totalAmount = Object.keys(data).reduce((acc, curr) => acc + data[curr]?.totalAmount, 0) || 0;

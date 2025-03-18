@@ -1,19 +1,26 @@
 'use client';
 
 import { documentOptions } from "@/lib/commonFunction";
-import { createToken } from "@/redux/slices/tokens";
+import { createToken, TokenRequest } from "@/redux/slices/tokens";
 import { AppDispatch } from "@/redux/store";
 import { Input, Modal, Form, Select } from "antd";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
 
 
+interface CreateTokenInterface {
+  setConfirmationModal: (arg: boolean) => void;
+  isModalOpen: boolean;
+  setIsModalOpen: (arg: boolean) => void;
+  setTokenDetails: (arg: TokenRequest)=> void;
+}
+
 const CreateTokenModal = ({ 
   isModalOpen,
   setIsModalOpen,
   setConfirmationModal,
   setTokenDetails
-}: any) => {
+}: CreateTokenInterface) => {
 
   const [paymentMode, setPaymentMode] = useState("CASH");
   const [form] = Form.useForm();
@@ -36,14 +43,15 @@ const CreateTokenModal = ({
         amount: Number(values.amount) || 0
       };
       console.log('tokenData', tokenData);
-      const response: any = await dispatch(createToken(tokenData)).unwrap();
+      const response: TokenRequest = await dispatch(createToken(tokenData)).unwrap();
       if(response.tokenNumber) {
         form.resetFields();
         setIsModalOpen(false);
         setTokenDetails(response);
         setConfirmationModal(true);
       }
-    } catch(error) {
+    } catch(e) {
+      console.log(e);
       form.resetFields();
       setIsModalOpen(false);
     }
@@ -73,7 +81,7 @@ const CreateTokenModal = ({
               }}
               allowClear
             >
-              {documentOptions.map((document: any) => {
+              {documentOptions.map((document) => {
                 return (
                   <Select.Option 
                   key={document.value} 

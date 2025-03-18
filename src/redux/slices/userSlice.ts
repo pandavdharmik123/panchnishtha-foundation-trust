@@ -1,6 +1,8 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import axiosInstance from "../../utils/axiosInstance";
 
+import { AxiosError } from 'axios';
+
 // ✅ Define User Input Type
 interface UserInput {
   email: string;
@@ -8,9 +10,12 @@ interface UserInput {
 }
 
 // ✅ Define Response Type
-interface UserResponse {
+export interface UserResponse {
   userName: string;
-  token: string;
+  success: boolean
+  token: string
+  userId: string
+  userEmail: string
 }
 
 // ✅ Define User State Type
@@ -36,11 +41,16 @@ export const loginUser = createAsyncThunk<UserResponse, UserInput, { rejectValue
     try {
       const response = await axiosInstance.post("/auth/login", userData);
       return response.data;
-    } catch (error: any) {
-      const message = error?.response?.data?.error || 'Something went wrong!';
-      return rejectWithValue(
-        error instanceof Error ? message : "Login failed"
-      );
+    } catch (error: unknown) {
+      let message = 'Something went wrong!';
+  
+      if (error instanceof AxiosError && error.response?.data?.error) {
+        message = error.response.data.error;
+      } else if (error instanceof Error) {
+        message = error.message;
+      }
+
+      return rejectWithValue(message);
     }
   }
 );

@@ -3,11 +3,9 @@
 import React from 'react';
 import {
   BarChartOutlined,
-  CloudOutlined,
-  TeamOutlined,
   UserOutlined,
 } from '@ant-design/icons';
-import { Layout, Menu } from 'antd';
+import { Menu } from 'antd';
 import { useRouter, usePathname } from 'next/navigation';
 
 const items = [

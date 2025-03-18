@@ -7,23 +7,24 @@ import {Button, Form, Input, notification} from "antd";
 import { useRouter } from 'next/navigation';
 import { AppDispatch } from '@/redux/store';
 import { useDispatch } from 'react-redux';
-import { loginUser } from '@/redux/slices/userSlice';
+import { loginUser, UserResponse } from '@/redux/slices/userSlice';
 
 const LoginForm: React.FC = () => {
   const router = useRouter();
   const dispatch = useDispatch<AppDispatch>();
   const [api, contextHolder] = notification.useNotification();
 
-  const handleLogin = async (values: any) => {
+  const handleLogin = async (values: {email: string, password: string}) => {
     try {
-      let { email, password } = values;
+      let { email } = values;
+      const {password} = values;
       if(email.includes('@pannishthafoundation.com')) {
         email = email.replace('@pannishthafoundation.com', '');
       } else {
         email = email + '@pannishthafoundation.com';
       };
   
-      const result: any = await dispatch(loginUser({ email, password })).unwrap();
+      const result: UserResponse = await dispatch(loginUser({ email, password })).unwrap();
       if(result.success === true && result.token) {
         await api.success({
           message: '',
@@ -35,10 +36,16 @@ const LoginForm: React.FC = () => {
           router.push('/');
         }, 1000);
       }
-    } catch(errorMessage: any) {
+    } catch (error: unknown) { // ✅ Fixed: Removed `any`, using `unknown`
+      let errorMessage = "An unknown error occurred";
+
+      if (error instanceof Error) {
+        errorMessage = error.message;
+      }
+
       api.error({
         message: '',
-        description: errorMessage,
+        description: errorMessage, // ✅ Fixed: Proper error handling
       });
     }
   }

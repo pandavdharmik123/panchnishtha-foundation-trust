@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
+import { AxiosError } from "axios";
 import axiosInstance from "../../utils/axiosInstance";
-import { notification } from 'antd';
 
 export interface TokenRequest {
   id?: string;
@@ -14,9 +14,9 @@ export interface TokenRequest {
   userDetail?: User;
   amount?: number;
   createdAt?: Date;
+  tokenNumber?: number;
 }
 
-// Assuming PaymentMode and User interfaces are defined elsewhere
 export enum PaymentMode {
   CASH = "CASH",
   CARD = "CARD",
@@ -43,59 +43,58 @@ const initialState: UserState = {
   error: null,
 };
 
-interface TokenResponse {
-  data: TokenRequest[],
-}
-
+// ✅ Async thunk to fetch all tokens
 export const getAllTokens = createAsyncThunk<
-  any, // Replace with actual response type if known
+  TokenRequest[], // Response Type
   void,
   { rejectValue: string }
 >("tokens/getAllTokens", async (_, { rejectWithValue }) => {
   try {
     const response = await axiosInstance.get("/tokens/getAllTokens");
     return response.data;
-  } catch (error: any) {
-    const message = error?.response?.data?.error || "Something went wrong!";
-    return rejectWithValue(
-      error instanceof Error ? message : "Fetching tokens failed"
-    );
+  } catch (error: unknown) {
+    const axiosError = error as AxiosError<{ error: string }>;
+    return rejectWithValue(axiosError.response?.data?.error || "Fetching tokens failed");
   }
 });
 
-
-// ✅ Async thunk for logout
-export const createToken = createAsyncThunk<TokenRequest, void, { rejectValue: string }>(
+// ✅ Async thunk for creating a token
+export const createToken = createAsyncThunk<
+  TokenRequest,
+  TokenRequest,
+  { rejectValue: string }
+>(
   "tokens/createToken",
   async (tokenData, { rejectWithValue }) => {
     try {
       const response = await axiosInstance.post("/tokens/createToken", tokenData);
       return response.data;
     } catch (error: unknown) {
-      return rejectWithValue(
-        error instanceof Error ? error.message : "Logout failed"
-      );
+      const axiosError = error as AxiosError<{ error: string }>;
+      return rejectWithValue(axiosError.response?.data?.error || "Token creation failed");
     }
   }
 );
 
-export const updateToken = createAsyncThunk<any, any, { rejectValue: string }>(
+// ✅ Async thunk for updating a token
+export const updateToken = createAsyncThunk<
+  {updatedToken: TokenRequest},
+  { tokenId: string; data: TokenRequest },
+  { rejectValue: string }
+>(
   "tokens/updateToken",
-  async (payload, { rejectWithValue }) => {
-    const { tokenId, data } = payload;
-
+  async ({ tokenId, data }, { rejectWithValue }) => {
     try {
       const response = await axiosInstance.patch(`/tokens/${tokenId}`, data);
       return response.data;
     } catch (error: unknown) {
-      return rejectWithValue(
-        error instanceof Error ? error.message : "Logout failed"
-      );
+      const axiosError = error as AxiosError<{ error: string }>;
+      return rejectWithValue(axiosError.response?.data?.error || "Token update failed");
     }
   }
 );
 
-// ✅ User Slice
+// ✅ Token Slice
 const tokenSlice = createSlice({
   name: "tokens",
   initialState,
@@ -106,47 +105,46 @@ const tokenSlice = createSlice({
         state.loading = true;
         state.error = null;
       })
-      .addCase(getAllTokens.fulfilled, (state, action: any) => {
+      .addCase(getAllTokens.fulfilled, (state, action: PayloadAction<TokenRequest[]>) => {
         state.loading = false;
         state.tokens = action.payload;
       })
-      .addCase(getAllTokens.rejected, (state, action: any) => {
+      .addCase(getAllTokens.rejected, (state, action: PayloadAction<string | undefined>) => {
         state.loading = false;
-        state.error = action.payload || "Login failed";
+        state.error = action.payload || "Fetching tokens failed";
       })
       .addCase(createToken.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(createToken.fulfilled, (state, action: any) => {
+      .addCase(createToken.fulfilled, (state, action: PayloadAction<TokenRequest>) => {
         state.loading = false;
         state.tokens = [action.payload, ...state.tokens];
       })
-      .addCase(createToken.rejected, (state, action: any) => {
+      .addCase(createToken.rejected, (state, action: PayloadAction<string | undefined>) => {
         state.loading = false;
-        state.error = action.payload || "Login failed";
+        state.error = action.payload || "Token creation failed";
       })
       .addCase(updateToken.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(updateToken.fulfilled, (state, action: any) => {
-        const updatedData = action?.payload?.updatedToken;
-        if(updatedData) {
-          const updatedTokens = state.tokens.map(token => 
-            token.id === updatedData.id ? { ...token, ...updatedData } : token
+      .addCase(updateToken.fulfilled, (state, action: PayloadAction<{updatedToken : TokenRequest}>) => {
+        const updatedToken = action.payload?.updatedToken;
+        console.log('updatedToken==', updatedToken);
+        if (updatedToken) {
+
+          state.tokens = state.tokens.map(token =>
+            token.id === updatedToken.id ? { ...token, ...updatedToken } : token
           );
-          state.tokens = updatedTokens;
-          state.loading = false;
         }
-        
-      })
-      .addCase(updateToken.rejected, (state, action: any) => {
         state.loading = false;
-        state.error = action.payload || "Update Failed";
       })
+      .addCase(updateToken.rejected, (state, action: PayloadAction<string | undefined>) => {
+        state.loading = false;
+        state.error = action.payload || "Token update failed";
+      });
   },
 });
 
-// export const { logout } = tokenSlice.actions;
 export default tokenSlice.reducer;

@@ -30,8 +30,11 @@ const EChartsComponent = ({ groupedData }: { groupedData: GroupDataInterface }) 
         axisPointer: {
           type: 'shadow'
         },
-        formatter: function (params: any) {
-          const data = params[0].data.tooltipData;
+        formatter: (params: echarts.EChartTooltipFormatterCallbackParams[]) => {
+          if (!params.length || !params[0].data) return '';
+
+          const data = (params[0].data as { tooltipData: { tokenCount: number; totalAmount: number } }).tooltipData;
+
           return `
             <div style="font-size: 14px; line-height: 1.5;">
               <span style="color: #FFD700; font-weight: bold;">📅 Date:</span> <span style="font-weight: bold;">${params[0].name}</span><br/>
@@ -55,19 +58,19 @@ const EChartsComponent = ({ groupedData }: { groupedData: GroupDataInterface }) 
       },
       yAxis: {
         type: 'value',
-        name: 'Token Count', // ✅ Y-Axis Title
-        nameLocation: 'center', // ✅ Center the title
-        nameGap: 40, // ✅ Space between title and axis
+        name: 'Token Count',
+        nameLocation: 'center',
+        nameGap: 40,
         nameTextStyle: {
           fontSize: 14,
           fontWeight: 'bold',
         },
         axisLabel: { fontWeight: 'bold' },
         splitLine: {
-          show: true, 
-          lineStyle: { type: 'dashed'}, // ✅ Make Y-axis a dotted line
+          show: true,
+          lineStyle: { type: 'dashed' }, // ✅ Make Y-axis a dotted line
         },
-      },  
+      },
       series: [
         {
           name: 'Token Count',

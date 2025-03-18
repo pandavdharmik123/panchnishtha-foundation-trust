@@ -12,7 +12,7 @@ export default function TokenPage() {
 
   useEffect(() => {
     dispatch(getAllTokens());
-  }, []);
+  }, [dispatch]);
 
   return (
     <TokenRequestTable tokenRequests={tokens} />

@@ -1,6 +1,11 @@
-import {SignJWT, jwtVerify, type JWTPayload} from 'jose';
+import {SignJWT, jwtVerify} from 'jose';
 
-export async function sign(payload: any, secret: string): Promise<string> {
+interface User {
+  id: string;
+  role: string
+}
+
+export async function sign(payload: User, secret: string): Promise<string> {
   const iat = Math.floor(Date.now() / 1000);
   const exp = iat + 60* 60; // one hour
 
@@ -20,7 +25,13 @@ export async function verify(token: string, secret: string) {
   return payload;
 }
 
-export const documentOptions = [
+interface DocType {
+  value: string;
+  label: string;
+  amount: number
+}
+
+export const documentOptions: DocType[] = [
   { value: "income_certificate", label: "આવક (Income Certificate)", amount: 100 },
   { value: "obc_certificate", label: "બક્ષીપંચ (OBC Certificate)", amount: 100 },
   { value: "non_creamy_layer", label: "નોન ક્રીમી લેયર (Non Creamy Layer)", amount: 300 },

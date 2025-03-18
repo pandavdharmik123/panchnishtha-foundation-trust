@@ -1,18 +1,26 @@
 'use client';
 
-import { Button, Modal } from "antd";
+import { Modal } from "antd";
 import Image from "next/image";
 import checkGIF from '@/assets/available-worldwide.gif';
 import './index.scss';
 import { isEmpty } from "lodash";
 import { documentOptions } from "@/lib/commonFunction";
+import { TokenRequest } from "@/redux/slices/tokens";
+
+interface PropsInterface {
+  confirmationModal: boolean;
+  setConfirmationModal: (arg: boolean) => void;
+  tokenDetails: TokenRequest;
+  setTokenDetails: (arg: TokenRequest)=> void;
+}
 
 const TokenConfimrationModal = ({
   confirmationModal,
   setConfirmationModal,
   tokenDetails = {},
   setTokenDetails
-}: any) => {
+}: PropsInterface) => {
 
   const handleCancel = () => {
     setConfirmationModal(false);
@@ -39,7 +47,7 @@ const TokenConfimrationModal = ({
           <div className='token-detail'>
             <span>Token Number: {tokenDetails.tokenNumber}</span>
             <span>Name: {tokenDetails.name}</span>
-            <span>Document Type: {getDocumentType(tokenDetails.documentType)}</span>
+            <span>Document Type: { tokenDetails.documentType && getDocumentType(tokenDetails.documentType)}</span>
           </div>
         </>
       )}

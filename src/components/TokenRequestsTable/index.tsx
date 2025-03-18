@@ -1,21 +1,19 @@
 "use client"; // Required for Next.js App Router if using hooks
 
 import { PlusOutlined, SearchOutlined } from "@ant-design/icons";
-import { Table, Input, Button, Modal, Form, Select, Radio, DatePicker, DatePickerProps, notification } from "antd";
+import { Table, Input, Button, DatePicker, DatePickerProps } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import { useEffect, useState } from "react";
 import './index.scss';
 import { documentOptions } from "@/lib/commonFunction";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/redux/store";
-import { TokenRequest as TokenInput, updateToken } from "@/redux/slices/tokens";
+import { TokenRequest as TokenInput, TokenRequest, updateToken } from "@/redux/slices/tokens";
 import paymentDoneImage from '@/assets/payment-done.png'
 import returnDoneImage from '@/assets/return-done.png'
 import Image from "next/image";
 import CreateTokenModal from "./CreateToken";
 import TokenConfimrationModal from "./ConfirmationModal";
-
-const { Option } = Select;
 
 // Define the required types
 export interface User {
@@ -31,28 +29,28 @@ export enum PaymentMode {
   ONLINE = "ONLINE",
 }
 
-export interface TokenRequest {
-  id: string;
-  tokenNumber: number;
-  name: string;
-  documentType: string;
-  mobileNumber: string;
-  isPaymentDone: boolean;
-  paymentMode: PaymentMode;
-  isReturn: boolean;
-  userId: string;
-  userDetail: User;
-  createdAt: Date;
-}
+// export interface TokenRequest {
+//   id: string;
+//   tokenNumber: number;
+//   name: string;
+//   documentType: string;
+//   mobileNumber: string;
+//   isPaymentDone: boolean;
+//   paymentMode: PaymentMode;
+//   isReturn: boolean;
+//   userId: string;
+//   userDetail: User;
+//   createdAt: Date;
+// }
 
-const TokenRequestTable = ({ tokenRequests }: any) => {
+const TokenRequestTable = ({ tokenRequests }: { tokenRequests: TokenRequest[] }) => {
   const [data, setData] = useState<TokenRequest[]>([]);
   const [filteredData, setFilteredData] = useState<TokenRequest[]>([]);
   const [searchText, setSearchText] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [confirmationModal, setConfirmationModal] = useState(false);
   const [tokenDetails, setTokenDetails] = useState<TokenInput>({});
-  const { loading, error } = useSelector((state: RootState) => state.tokens);
+  const { loading } = useSelector((state: RootState) => state.tokens);
 
   const dispatch: AppDispatch = useDispatch();
 
@@ -68,11 +66,11 @@ const TokenRequestTable = ({ tokenRequests }: any) => {
     const filtered = data.filter(
       (item) =>
         String(item.tokenNumber).includes(value) ||
-        item.name.toLowerCase().includes(value.toLowerCase()) ||
-        item.documentType.toLowerCase().includes(value.toLowerCase()) ||
-        item.mobileNumber.includes(value) ||
-        item.userDetail.email.toLowerCase().includes(value.toLowerCase()) ||
-        item.paymentMode.toLowerCase().includes(value.toLowerCase())
+        item.name?.toLowerCase().includes(value.toLowerCase()) ||
+        item.documentType?.toLowerCase().includes(value.toLowerCase()) ||
+        item.mobileNumber?.includes(value) ||
+        item.userDetail?.email.toLowerCase().includes(value.toLowerCase()) ||
+        item.paymentMode?.toLowerCase().includes(value.toLowerCase())
     );
     setFilteredData(filtered);
   };
@@ -102,7 +100,7 @@ const TokenRequestTable = ({ tokenRequests }: any) => {
       align: 'center',
       width: 100,
       fixed: true,
-      sorter: (a, b) => a.tokenNumber - b.tokenNumber,
+      sorter: (a, b) => (a.tokenNumber as number) - (b.tokenNumber as number),
     },
     {
       title: "Token Date",
@@ -120,7 +118,7 @@ const TokenRequestTable = ({ tokenRequests }: any) => {
       dataIndex: "name",
       align: 'center',
       key: "name",
-      sorter: (a, b) => a.name.localeCompare(b.name),
+      sorter: (a, b) => a.name?.localeCompare(b.name as string) || 0,
     },
     
     {
@@ -164,7 +162,7 @@ const TokenRequestTable = ({ tokenRequests }: any) => {
       width: 120,
       render: (isPaymentDone, record) => (isPaymentDone 
         ? <Image alt='payment-done' src={paymentDoneImage} height={32} width={32} />
-        : <Button className='payment-done-btn' onClick={() => handlePaymentDone(record.id)}>જમા</Button>),
+        : <Button className='payment-done-btn' onClick={() => handlePaymentDone(record.id as string)}>જમા</Button>),
     },
     {
       title: "Document Return",
@@ -175,7 +173,7 @@ const TokenRequestTable = ({ tokenRequests }: any) => {
       width: 100,
       render: (isReturn, record) => (isReturn 
         ? <Image alt='payment-done' src={returnDoneImage} height={32} width={32} />
-        : <Button type="primary" danger onClick={() => handleReturnDone(record.id)}>Return</Button>),
+        : <Button type="primary" danger onClick={() => handleReturnDone(record.id as string)}>Return</Button>),
     },
     
   ];
@@ -184,7 +182,7 @@ const TokenRequestTable = ({ tokenRequests }: any) => {
     if(dateString) {
       const filtered = data.filter(
         (item) => {
-          const selectedDate = new Date(item.createdAt).toLocaleDateString("en-GB", {
+          const selectedDate = new Date(item.createdAt as Date).toLocaleDateString("en-GB", {
             day: "2-digit",
             month: "2-digit",
             year: "numeric",
@@ -235,7 +233,6 @@ const TokenRequestTable = ({ tokenRequests }: any) => {
       <CreateTokenModal 
         isModalOpen={isModalOpen} 
         setIsModalOpen={setIsModalOpen} 
-        confirmationModal={confirmationModal} 
         setConfirmationModal={setConfirmationModal}
         setTokenDetails={setTokenDetails}
        />

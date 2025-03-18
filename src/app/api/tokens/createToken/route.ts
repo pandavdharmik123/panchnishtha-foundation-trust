@@ -53,7 +53,7 @@ export async function POST(req: Request) {
     if(newTokenRequest.tokenNumber && newTokenRequest.id && newTokenRequest.mobileNumber) {
       const { mobileNumber, tokenNumber, createdAt } = newTokenRequest;
 
-      let date = new Date(createdAt);
+      const date = new Date(createdAt);
       date.setDate(date.getDate() + 1);
       const formattedDate = new Intl.DateTimeFormat('gu-IN', {
         day: '2-digit',
@@ -72,8 +72,14 @@ export async function POST(req: Request) {
     }
 
     return NextResponse.json({ ...newTokenRequest, isMessageSent: true }, { status: 200 });
-  } catch(error: any) {
-    return NextResponse.json({ error: error }, { status: 500 });
+  } catch(error: unknown) {
+    if (error instanceof Error) {
+      return NextResponse.json({ error: error.message }, { status: 500 });
+    }
+    return NextResponse.json(
+      { error: "An unknown error occurred" },
+      { status: 500 }
+    );
   }
   
 }
