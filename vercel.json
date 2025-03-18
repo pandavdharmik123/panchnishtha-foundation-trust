@@ -1,7 +1,3 @@
 {
-  "build": {
-    "commands": [
-      "prisma generate"
-    ]
-  }
+  "builds": [{ "src": "package.json", "use": "@vercel/next" }]
 }
