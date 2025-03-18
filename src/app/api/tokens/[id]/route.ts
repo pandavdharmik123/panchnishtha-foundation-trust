@@ -6,9 +6,9 @@ export async function PATCH(req: Request) {
     const url = new URL(req.url); // ✅ Extract URL
     const id = url.pathname.split('/').pop(); // ✅ Extract ID from URL
 
-    if (!id) {
-      return NextResponse.json({ error: 'Token ID is required' }, { status: 400 });
-    }
+      if (!id) {
+        return NextResponse.json({ error: 'Token ID is required' }, { status: 400 });
+      }
 
     const body = await req.json();
     console.log('Request body:', body);

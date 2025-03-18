@@ -1,9 +1,14 @@
 import { prisma } from '@/lib/prisma';
 import { NextResponse } from 'next/server';
 
-export async function GET(request: Request, { params }: { params: { id: string } }) {
+export async function GET(request: Request) {
   try {
-    const { id } = params;
+    const url = new URL(request.url); // ✅ Extract URL
+    const id = url.pathname.split('/').pop(); // ✅ Extract ID from URL
+
+    if (!id) {
+      return NextResponse.json({ error: 'Token ID is required' }, { status: 400 });
+    }
 
     // Fetch user details from Prisma
     const user = await prisma.user.findUnique({

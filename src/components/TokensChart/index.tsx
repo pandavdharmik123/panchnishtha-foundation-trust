@@ -3,6 +3,7 @@
 import React, { useEffect, useRef } from 'react';
 import * as echart from 'echarts';
 import { GroupDataInterface } from '@/app/page';
+import { CallbackDataParams } from 'echarts/types/dist/shared';
 
 const EChartsComponent = ({ groupedData }: { groupedData: GroupDataInterface }) => {
   const chartRef = useRef<HTMLDivElement>(null);
@@ -30,7 +31,7 @@ const EChartsComponent = ({ groupedData }: { groupedData: GroupDataInterface }) 
         axisPointer: {
           type: 'shadow'
         },
-        formatter: (params: echarts.EChartTooltipFormatterCallbackParams[]) => {
+        formatter: (params: CallbackDataParams[]) => {
           if (!params.length || !params[0].data) return '';
 
           const data = (params[0].data as { tooltipData: { tokenCount: number; totalAmount: number } }).tooltipData;
