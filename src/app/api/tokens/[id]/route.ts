@@ -1,9 +1,10 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 
-export async function PATCH(req: Request, { params }: { params: { id: string } }) {
+export async function PATCH(req: Request) {
   try {
-    const { id } = params; // ✅ Fix: Correctly extracting `id` from `params`
+    const url = new URL(req.url); // ✅ Extract URL
+    const id = url.pathname.split('/').pop(); // ✅ Extract ID from URL
 
     if (!id) {
       return NextResponse.json({ error: 'Token ID is required' }, { status: 400 });
