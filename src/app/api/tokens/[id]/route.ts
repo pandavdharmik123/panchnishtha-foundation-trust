@@ -1,20 +1,20 @@
 import { NextResponse } from 'next/server';
-import { prisma } from '@/lib/prisma'; // Ensure this exists
+import { prisma } from '@/lib/prisma';
 
 export async function PATCH(req: Request, { params }: { params: { id: string } }) {
-  const { id } = await params;
-
-  if (!id) {
-    return NextResponse.json({ error: 'Token ID is required' }, { status: 400 });
-  }
-
-  const body = await req.json();
-  console.log('Request body:', body);
-
   try {
+    const { id } = params; // ✅ Fix: Correctly extracting `id` from `params`
+
+    if (!id) {
+      return NextResponse.json({ error: 'Token ID is required' }, { status: 400 });
+    }
+
+    const body = await req.json();
+    console.log('Request body:', body);
+
     const updatedToken = await prisma.tokenRequest.update({
-      where: { id: id },
-      data: { ...body},
+      where: { id },
+      data: { ...body },
       include: {
         userDetail: {
           select: {
@@ -26,7 +26,7 @@ export async function PATCH(req: Request, { params }: { params: { id: string } }
             role: true, // Include only necessary fields
           },
         },
-      }
+      },
     });
 
     return NextResponse.json({ message: 'Token updated successfully', updatedToken }, { status: 200 });
