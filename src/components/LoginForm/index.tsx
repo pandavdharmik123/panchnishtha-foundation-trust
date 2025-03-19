@@ -17,7 +17,7 @@ const LoginForm: React.FC = () => {
   const handleLogin = async (values: {email: string, password: string}) => {
     try {
       let { email } = values;
-      const {password} = values;
+      const { password} = values;
       if(email.includes('@pannishthafoundation.com')) {
         email = email.replace('@pannishthafoundation.com', '');
       } else {

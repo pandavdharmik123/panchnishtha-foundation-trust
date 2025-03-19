@@ -3,7 +3,7 @@ import Cookies from "js-cookie"; // Import js-cookie for accessing cookies
 
 // Create an instance of Axios with default configuration
 const axiosInstance = axios.create({
-  baseURL: `${process.env.NEXT_PUBLIC_API_URL}/api` || "http://localhost:3000/api", // Change to your API base URL
+  baseURL:  '/api',//`${process.env.NEXT_PUBLIC_API_URL}/api` || "http://localhost:3000/api", // Change to your API base URL
   headers: {
     "Content-Type": "application/json",
   },
