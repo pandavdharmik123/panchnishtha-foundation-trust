@@ -4,6 +4,7 @@ import React from 'react';
 import { Layout } from 'antd';
 import HeaderComponent from '@/components/Header';
 import SiderComponent from '@/components/SiderComponent';
+// import Loader from '../Loader';
 
 const { Header, Content, Sider } = Layout;
 
@@ -20,6 +21,7 @@ const MainLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
         </Header>
 
         <Content className='content'>
+          {/* <Loader /> */}
           {children}
         </Content>
       </Layout>

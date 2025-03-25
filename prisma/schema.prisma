@@ -31,12 +31,14 @@ model TokenRequest {
   amount        Int         @default(0)
   userId        String
   userDetail    User        @relation(fields: [userId], references: [id]) // Many-to-One Relationship
+  returnDate     DateTime    @default(now())
   createdAt     DateTime    @default(now())
 }
 
 enum PaymentMode {
   ONLINE
   CASH
+  FREE
 }
 
 enum Role {

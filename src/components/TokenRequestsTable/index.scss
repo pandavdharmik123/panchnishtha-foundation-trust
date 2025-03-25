@@ -4,6 +4,7 @@
     justify-content: space-between;
     gap: 12px;
     padding: 8px;
+    align-items: center;
 
     .date-picker {
       width: 250px;
@@ -15,10 +16,18 @@
         background-color: #3a2a97;
       }
     }
+
+    .excel-icon {
+      cursor: pointer;
+    }
   }
 
   .ant-table-body {
     overflow: auto !important;
+
+    .view-detail {
+      cursor: pointer;
+    }
   }
   .payment-done-btn, .payment-done-btn:hover {
     background-color: green !important;
@@ -31,37 +40,63 @@
   }
 }
 
-.confirmation-modal {
-  .ant-modal-body {
+.print-btn-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 20px;
+
+  .ant-btn {
+    background-color: #3b2b99 !important;
+  }
+}
+
+.print-reference {
+  max-width: 472px;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  margin: 0 auto;
+  .image-container {
     display: flex;
     justify-content: center;
+    align-items: center;
     flex-direction: column;
-    
-    .image-container {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      flex-direction: column;
-
-      .success-message {
-        font-size: 24px;
-        font-weight: bold;
-        color: green;
-        font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
-      }
+  
+    .success-message {
+      font-size: 24px;
+      font-weight: bold;
+      color: green;
+      font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
     }
+  }
+  
+  .token-detail {
+    margin: 12px 0;
+    display: flex;
+    flex-direction: column;
+    padding: 12px;
+    background: #ddfecc;
+    border: 1px solid #23c55c;
+    border-radius: 5px;
+    gap: 8px;
+    font-size: 16px;
+    font-weight: 600;
+  }
+}
 
-    .token-detail {
-      margin: 12px 0;
-      display: flex;
-      flex-direction: column;
-      padding: 12px;
-      background: #ddfecc;
-      border: 1px solid #23c55c;
-      border-radius: 5px;
-      gap: 8px;
-      font-size: 16px;
-      font-weight: 600;
+
+.div-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  justify-content: space-between;
+
+  .input {
+    width: 100%;
+
+    .date-picker {
+      width: 100%;
     }
   }
 }

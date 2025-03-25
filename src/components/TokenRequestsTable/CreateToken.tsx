@@ -3,10 +3,11 @@
 import { documentOptions } from "@/lib/commonFunction";
 import { createToken, TokenRequest } from "@/redux/slices/tokens";
 import { AppDispatch } from "@/redux/store";
-import { Input, Modal, Form, Select } from "antd";
+import { Input, Modal, Form, Select, DatePicker } from "antd";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
-
+import dayjs from "dayjs";
+import './index.scss';
 
 interface CreateTokenInterface {
   setConfirmationModal: (arg: boolean) => void;
@@ -40,7 +41,8 @@ const CreateTokenModal = ({
         ...values,
         documentType: values.documentType !== 'other' ? values.documentType : values.otherDocumentType,
         userId: localStorage.getItem("userId"),
-        amount: Number(values.amount) || 0
+        amount: Number(values.amount) || 0,
+        returnDate: new Date(values.returnDate)
       };
       console.log('tokenData', tokenData);
       const response: TokenRequest = await dispatch(createToken(tokenData)).unwrap();
@@ -57,7 +59,6 @@ const CreateTokenModal = ({
     }
       
   };
-  
 
   return (
     <Modal
@@ -144,12 +145,21 @@ const CreateTokenModal = ({
             />
           </Form.Item>
 
-          <Form.Item label="Payment Mode" name="paymentMode" initialValue="CASH">
-            <Select value={paymentMode} onChange={(value) => setPaymentMode(value)}>
-              <Select.Option value="ONLINE">Online</Select.Option>
-              <Select.Option value="CASH">Cash</Select.Option>
-            </Select>
-          </Form.Item>
+          <div className="div-wrapper">
+            <Form.Item className="input" label="Payment Mode" name="paymentMode" initialValue="CASH">
+              <Select value={paymentMode} onChange={(value) => setPaymentMode(value)}>
+                <Select.Option value="ONLINE">Online</Select.Option>
+                <Select.Option value="CASH">Cash</Select.Option>
+                <Select.Option value="FREE">Free</Select.Option>
+              </Select>
+            </Form.Item>
+            <Form.Item className="input" initialValue={dayjs().add(1, 'day')} label="Return Date" name="returnDate">
+              <DatePicker 
+                className='date-picker'
+                format={'DD/MM/YYYY'} 
+              />
+            </Form.Item>
+          </div>          
         </Form>
     </Modal>
   )

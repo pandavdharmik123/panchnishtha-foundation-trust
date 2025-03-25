@@ -1,19 +1,22 @@
 "use client"; // Required for Next.js App Router if using hooks
 
 import { PlusOutlined, SearchOutlined } from "@ant-design/icons";
-import { Table, Input, Button, DatePicker, DatePickerProps } from "antd";
+import { Table, Input, Button, DatePicker, DatePickerProps, Tooltip } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import { useEffect, useState } from "react";
 import './index.scss';
-import { documentOptions } from "@/lib/commonFunction";
+import { exportToExcel, formatDate, getDocumentName } from "@/lib/commonFunction";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/redux/store";
 import { TokenRequest as TokenInput, TokenRequest, updateToken } from "@/redux/slices/tokens";
 import paymentDoneImage from '@/assets/payment-done.png'
 import returnDoneImage from '@/assets/return-done.png'
+import viewDetailIcon from '@/assets/view-detail.png'
+import excelIcon from '@/assets/export-excel-icon.png'
 import Image from "next/image";
 import CreateTokenModal from "./CreateToken";
 import TokenConfimrationModal from "./ConfirmationModal";
+import { isEmpty, sortBy } from "lodash";
 
 // Define the required types
 export interface User {
@@ -29,20 +32,6 @@ export enum PaymentMode {
   ONLINE = "ONLINE",
 }
 
-// export interface TokenRequest {
-//   id: string;
-//   tokenNumber: number;
-//   name: string;
-//   documentType: string;
-//   mobileNumber: string;
-//   isPaymentDone: boolean;
-//   paymentMode: PaymentMode;
-//   isReturn: boolean;
-//   userId: string;
-//   userDetail: User;
-//   createdAt: Date;
-// }
-
 const TokenRequestTable = ({ tokenRequests }: { tokenRequests: TokenRequest[] }) => {
   const [data, setData] = useState<TokenRequest[]>([]);
   const [filteredData, setFilteredData] = useState<TokenRequest[]>([]);
@@ -50,7 +39,7 @@ const TokenRequestTable = ({ tokenRequests }: { tokenRequests: TokenRequest[] })
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [confirmationModal, setConfirmationModal] = useState(false);
   const [tokenDetails, setTokenDetails] = useState<TokenInput>({});
-  const { loading } = useSelector((state: RootState) => state.tokens);
+  const { tokens, loading } = useSelector((state: RootState) => state.tokens);
 
   const dispatch: AppDispatch = useDispatch();
 
@@ -91,6 +80,11 @@ const TokenRequestTable = ({ tokenRequests }: { tokenRequests: TokenRequest[] })
     }
   }
 
+  const handleViewDetail = (tokenData: TokenRequest) => {
+    setTokenDetails(tokenData);
+    setConfirmationModal(true);
+  }
+
   // Table columns
   const columns: ColumnsType<TokenRequest> = [
     {
@@ -107,11 +101,7 @@ const TokenRequestTable = ({ tokenRequests }: { tokenRequests: TokenRequest[] })
       dataIndex: "createdAt",
       align: 'center',
       key: "createdAt",
-      render: (date) => new Date(date).toLocaleDateString("en-GB", {
-        day: "2-digit",
-        month: "2-digit",
-        year: "numeric",
-      }),      
+      render: (date) => formatDate(date),      
     },
     {
       title: "Name",
@@ -126,7 +116,7 @@ const TokenRequestTable = ({ tokenRequests }: { tokenRequests: TokenRequest[] })
       align: 'center',
       dataIndex: "documentType",
       key: "documentType",
-      render: (documentType) => documentOptions.find(docType => docType.value === documentType)?.label || documentType,
+      render: (documentType) => getDocumentName(documentType),
     },
     {
       title: "Mobile Number",
@@ -175,6 +165,17 @@ const TokenRequestTable = ({ tokenRequests }: { tokenRequests: TokenRequest[] })
         ? <Image alt='payment-done' src={returnDoneImage} height={32} width={32} />
         : <Button type="primary" danger onClick={() => handleReturnDone(record.id as string)}>Return</Button>),
     },
+    {
+      title: "View Detail",
+      align: 'center',
+      dataIndex: "view_detail",
+      key: "view_details",
+      fixed: 'right',
+      width: 100,
+      render: (_, record) => (
+        <Image className='view-detail' alt='payment-done' src={viewDetailIcon} onClick={() => handleViewDetail(record)}  height={25} width={22} />
+      ),
+    },
     
   ];
 
@@ -196,8 +197,23 @@ const TokenRequestTable = ({ tokenRequests }: { tokenRequests: TokenRequest[] })
     } else {
       setFilteredData(data);
     }
-    
   };
+
+  const handleExportExcel = () => {
+    if(!isEmpty(tokens)) {
+      const fileName = `Token_${formatDate(new Date())}`
+      const data = sortBy(tokens, 'tokenNumber').map(value => ({
+        tokenNumber: String(value.tokenNumber) || '',
+        name: value.name || '',
+        mobileNumber: String(value.mobileNumber) || '',
+        paymentType: value.paymentMode || '',
+        amount: String(value.amount) || '',
+        documentType: value.documentType ? getDocumentName(value.documentType) : '',
+        payment: value.isPaymentDone ? 'Done' : 'Pending'
+      }))
+      exportToExcel(data, fileName);
+    }
+  }
 
   return (
     <div className='tokens-table-container'>
@@ -212,6 +228,10 @@ const TokenRequestTable = ({ tokenRequests }: { tokenRequests: TokenRequest[] })
         />
 
         <DatePicker className='date-picker' onChange={onChange} format={'DD/MM/YYYY'} />
+
+        <Tooltip title='Export Excel' placement='bottom'>
+          <Image className='excel-icon' alt="excel" src={excelIcon} height={40} width={40} onClick={handleExportExcel} />
+        </Tooltip>
 
         <Button className='create-btn' type="primary" icon={<PlusOutlined />} onClick={showModal}>
           Create Token

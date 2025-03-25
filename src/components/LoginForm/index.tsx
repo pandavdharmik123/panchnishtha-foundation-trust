@@ -16,13 +16,13 @@ const LoginForm: React.FC = () => {
 
   const handleLogin = async (values: {email: string, password: string}) => {
     try {
-      let { email } = values;
-      const { password} = values;
-      if(email.includes('@pannishthafoundation.com')) {
-        email = email.replace('@pannishthafoundation.com', '');
-      } else {
-        email = email + '@pannishthafoundation.com';
-      };
+      // let { email } = values;
+      const { email, password} = values;
+      // if(email.includes('@pannishthafoundation.com')) {
+      //   email = email.replace('@pannishthafoundation.com', '');
+      // } else {
+      //   email = email + '@pannishthafoundation.com';
+      // };
   
       const result: UserResponse = await dispatch(loginUser({ email, password })).unwrap();
       if(result.success === true && result.token) {
@@ -71,7 +71,7 @@ const LoginForm: React.FC = () => {
             rules={[{ required: true, message: 'Email is required' }]}
           >
             {/* <Input placeholder="Email" /> */}
-            <Input placeholder="Email" addonAfter="@punchnishthafoundation.com" />
+            <Input placeholder="Email" />
           </Form.Item>
         </div>
 

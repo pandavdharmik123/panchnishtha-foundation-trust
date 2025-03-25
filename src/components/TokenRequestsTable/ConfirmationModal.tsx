@@ -1,34 +1,46 @@
 'use client';
 
-import { Modal } from "antd";
+import { useRef } from "react";
+import { Button, Modal } from "antd";
 import Image from "next/image";
-import checkGIF from '@/assets/available-worldwide.gif';
-import './index.scss';
 import { isEmpty } from "lodash";
-import { documentOptions } from "@/lib/commonFunction";
+import { documentOptions, formatDate } from "@/lib/commonFunction";
 import { TokenRequest } from "@/redux/slices/tokens";
+import { useReactToPrint } from "react-to-print";
+import { PrinterOutlined } from "@ant-design/icons";
 
 interface PropsInterface {
   confirmationModal: boolean;
   setConfirmationModal: (arg: boolean) => void;
   tokenDetails: TokenRequest;
-  setTokenDetails: (arg: TokenRequest)=> void;
+  setTokenDetails: (arg: TokenRequest) => void;
 }
 
 const TokenConfimrationModal = ({
   confirmationModal,
   setConfirmationModal,
   tokenDetails = {},
-  setTokenDetails
+  setTokenDetails,
 }: PropsInterface) => {
+  const contentRef = useRef<HTMLDivElement>(null);
 
   const handleCancel = () => {
     setConfirmationModal(false);
     setTokenDetails({});
   };
 
-  const getDocumentType = (documentType: string) => 
-    documentOptions.find(docType => docType.value === documentType)?.label || documentType;
+  const getDocumentType = (documentType: string) =>
+    documentOptions.find((docType) => docType.value === documentType)?.label || documentType;
+
+  const reactToPrintFn = useReactToPrint({
+    contentRef,
+  });
+
+  const handlePrintBtn = () => {
+    setTimeout(() => {
+      reactToPrintFn();
+    }, 200);
+  }
   return (
     <Modal
       open={confirmationModal}
@@ -38,19 +50,38 @@ const TokenConfimrationModal = ({
       footer={false}
       onCancel={handleCancel}
     >
-      <div className='image-container'>
-        <Image height={150} width={150} src={checkGIF} alt="GIF" />
-        <span className="success-message">Token Created Successfully!</span>
-      </div>
-      {!isEmpty(tokenDetails) && (
-        <>
-          <div className='token-detail'>
-            <span>Token Number: {tokenDetails.tokenNumber}</span>
-            <span>Name: {tokenDetails.name}</span>
-            <span>Document Type: { tokenDetails.documentType && getDocumentType(tokenDetails.documentType)}</span>
+      <div ref={contentRef} className='print-reference'>
+        <div className="image-container">
+          <Image height={150} width={250} src={'/images/trust_logo.png'} alt="GIF" />
+        </div>
+        {!isEmpty(tokenDetails) && (
+          <div className="token-detail">
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontWeight: 'bold' }}>
+              <span>ટોકન નંબર: {tokenDetails.tokenNumber}</span>
+              <span>ટોકન તારીખ: {tokenDetails.createdAt && formatDate(tokenDetails.createdAt)}</span>
+            </div>
+            <span>નામ: {tokenDetails.name}</span>
+            <span>ડોક્યુમેન્ટ નો પ્રકાર: {tokenDetails.documentType && getDocumentType(tokenDetails.documentType)}</span>
+            <span>રકમ: ₹{tokenDetails.amount}</span>
+            <span>ફોર્મ પરત લેવા નો સમય: {tokenDetails.returnDate && formatDate(tokenDetails.returnDate)} રાત્રે 10:00 વાગ્યે</span>
           </div>
-        </>
-      )}
+        )}
+        <div style={{ display: 'flex', flexDirection: 'column', textAlign: 'center', fontWeight: 'bold' }}>
+          <span>વધુ માહિતી માટે તમારા મોબઈલ માં આજે જ આ નંબર સેવ કરી લો.</span>
+          <span>+91 88 66 41 67 67</span>
+        </div>
+      </div>
+      
+      <div className='print-btn-wrapper'>
+        <Button 
+          type="primary" 
+          onClick={handlePrintBtn}
+          icon={<PrinterOutlined />}
+        >
+          Print Token
+        </Button>
+      </div>
+      
     </Modal>
   )
 };

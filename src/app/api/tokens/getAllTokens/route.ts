@@ -23,7 +23,7 @@ export async function GET() {
 
     return NextResponse.json(tokenRequests);
   } catch (error) {
-    console.error("Error fetching token requests:", error);
+    console.log('error---', error);
     return NextResponse.json(
       { error: "Something went wrong while fetching token requests" },
       { status: 500 }

@@ -15,11 +15,12 @@ export interface TokenRequest {
   amount?: number;
   createdAt?: Date;
   tokenNumber?: number;
+  returnDate?: Date;
 }
 
 export enum PaymentMode {
   CASH = "CASH",
-  CARD = "CARD",
+  FREE = "FREE",
   ONLINE = "ONLINE",
 }
 

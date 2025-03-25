@@ -1,8 +1,15 @@
 import {SignJWT, jwtVerify} from 'jose';
+import * as XLSX from 'xlsx';
+import { saveAs } from 'file-saver';
+import { startCase } from 'lodash';
 
 interface User {
   id: string;
   role: string
+}
+
+interface excelTokenRequest {
+  [key: string]: string | number; 
 }
 
 export async function sign(payload: User, secret: string): Promise<string> {
@@ -32,10 +39,46 @@ interface DocType {
 }
 
 export const documentOptions: DocType[] = [
-  { value: "income_certificate", label: "આવક (Income Certificate)", amount: 100 },
-  { value: "obc_certificate", label: "બક્ષીપંચ (OBC Certificate)", amount: 100 },
+  { value: "income_certificate", label: "આવક નો દાખલો (Income Certificate)", amount: 100 },
+  { value: "obc_certificate", label: "બક્ષીપંચ નો દાખલો (OBC Certificate)", amount: 100 },
   { value: "non_creamy_layer", label: "નોન ક્રીમી લેયર (Non Creamy Layer)", amount: 300 },
   { value: "ews_certificate", label: "EWS Certificate", amount: 300 },
   { value: "other", label: "Other", amount: 0 }, // Amount can be dynamic for "Other"
 ];
+
+export const getDocumentName = (documentType: string) => {
+  return documentOptions.find(docType => docType.value === documentType)?.label || documentType;
+}
+
+export const formatDate = (date: Date) => new Date(date).toLocaleDateString("en-GB", {
+  day: "2-digit",
+  month: "2-digit",
+  year: "numeric",
+});
+
+
+export const exportToExcel = (data: excelTokenRequest[], fileName: string) => {
+  if (!data || data.length === 0) return;
+
+  // Format headers: convert camelCase to "Start Case"
+  const formattedData = data.map((row: excelTokenRequest) => {
+    const newRow: Record<string, string | number> = {};
+    Object.keys(row).forEach((key: string) => {
+      const formattedKey = startCase(key);
+      newRow[formattedKey] = row[key];
+    });
+    return newRow;
+  });
+
+  // Create worksheet and workbook
+  const worksheet = XLSX.utils.json_to_sheet(formattedData);
+  const workbook = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(workbook, worksheet, 'Sheet1');
+
+  // Write and trigger download
+  const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+  const fileData = new Blob([excelBuffer], { type: 'application/octet-stream' });
+  saveAs(fileData, `${fileName}.xlsx`);
+};
+
 
