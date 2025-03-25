@@ -1,7 +1,7 @@
 import {SignJWT, jwtVerify} from 'jose';
 import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
-import startCase from 'lodash/startCase';
+import { startCase } from 'lodash';
 
 interface User {
   id: string;
