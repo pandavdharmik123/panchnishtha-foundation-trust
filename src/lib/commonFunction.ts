@@ -1,7 +1,7 @@
 import {SignJWT, jwtVerify} from 'jose';
 import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
-import { startCase } from 'lodash-es';
+// import { startCase } from 'lodash-es';
 
 interface User {
   id: string;
@@ -56,6 +56,12 @@ export const formatDate = (date: Date) => new Date(date).toLocaleDateString("en-
   year: "numeric",
 });
 
+function camelCaseToWords(str: string) {
+  // Insert a space before all uppercase letters and trim any leading spaces
+  const spaced = str.replace(/([A-Z])/g, ' $1').trim();
+  // Capitalize the first letter of each word
+  return spaced.replace(/\b\w/g, char => char.toUpperCase());
+}
 
 export const exportToExcel = (data: excelTokenRequest[], fileName: string) => {
   if (!data || data.length === 0) return;
@@ -64,7 +70,7 @@ export const exportToExcel = (data: excelTokenRequest[], fileName: string) => {
   const formattedData = data.map((row: excelTokenRequest) => {
     const newRow: Record<string, string | number> = {};
     Object.keys(row).forEach((key: string) => {
-      const formattedKey = startCase(key);
+      const formattedKey = camelCaseToWords(key);
       newRow[formattedKey] = row[key];
     });
     return newRow;
