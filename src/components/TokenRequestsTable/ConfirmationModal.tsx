@@ -16,7 +16,7 @@ interface PropsInterface {
   setTokenDetails: (arg: TokenRequest) => void;
 }
 
-const TokenConfimrationModal = ({
+const TokenConfirmationModal = ({
   confirmationModal,
   setConfirmationModal,
   tokenDetails = {},
@@ -63,7 +63,8 @@ const TokenConfimrationModal = ({
             <span>નામ: {tokenDetails.name}</span>
             <span>ડોક્યુમેન્ટ નો પ્રકાર: {tokenDetails.documentType && getDocumentType(tokenDetails.documentType)}</span>
             <span>રકમ: ₹{tokenDetails.amount}</span>
-            <span>ફોર્મ પરત લેવા નો સમય: {tokenDetails.returnDate && formatDate(tokenDetails.returnDate)} રાત્રે 10:00 વાગ્યે</span>
+            <span>ફોર્મ પરત લેવા નો સમય: {tokenDetails.returnDate && formatDate(tokenDetails.returnDate)} રાત્રે 10:00 થી 11:00 વાગ્યા સુધી </span>
+            <span className='footer-text'>ફોર્મ પરત લેવા માટે ટોકન ફરજીયાત સાથે લાવવું.</span>
           </div>
         )}
         <div style={{ display: 'flex', flexDirection: 'column', textAlign: 'center', fontWeight: 'bold' }}>
@@ -86,4 +87,4 @@ const TokenConfimrationModal = ({
   )
 };
 
-export default TokenConfimrationModal;
+export default TokenConfirmationModal;

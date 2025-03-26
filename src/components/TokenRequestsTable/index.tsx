@@ -1,21 +1,23 @@
 "use client"; // Required for Next.js App Router if using hooks
 
 import { PlusOutlined, SearchOutlined } from "@ant-design/icons";
-import { Table, Input, Button, DatePicker, DatePickerProps, Tooltip } from "antd";
+import {Table, Input, Button, DatePicker, DatePickerProps, Tooltip, notification} from "antd";
 import type { ColumnsType } from "antd/es/table";
 import { useEffect, useState } from "react";
 import './index.scss';
 import { exportToExcel, formatDate, getDocumentName } from "@/lib/commonFunction";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/redux/store";
-import { TokenRequest as TokenInput, TokenRequest, updateToken } from "@/redux/slices/tokens";
+import {deleteToken, TokenRequest as TokenInput, TokenRequest, updateToken} from "@/redux/slices/tokens";
 import paymentDoneImage from '@/assets/payment-done.png'
 import returnDoneImage from '@/assets/return-done.png'
 import viewDetailIcon from '@/assets/view-detail.png'
+import editIcon from '@/assets/edit-icon.png'
+import deleteIcon from '@/assets/delete-icon.png'
 import excelIcon from '@/assets/export-excel-icon.png'
 import Image from "next/image";
 import CreateTokenModal from "./CreateToken";
-import TokenConfimrationModal from "./ConfirmationModal";
+import TokenConfirmationModal from "./ConfirmationModal";
 import { isEmpty, sortBy } from "lodash";
 
 // Define the required types
@@ -26,12 +28,6 @@ export interface User {
   mobileNumber: string;
 }
 
-export enum PaymentMode {
-  CASH = "CASH",
-  CARD = "CARD",
-  ONLINE = "ONLINE",
-}
-
 const TokenRequestTable = ({ tokenRequests }: { tokenRequests: TokenRequest[] }) => {
   const [data, setData] = useState<TokenRequest[]>([]);
   const [filteredData, setFilteredData] = useState<TokenRequest[]>([]);
@@ -39,7 +35,10 @@ const TokenRequestTable = ({ tokenRequests }: { tokenRequests: TokenRequest[] })
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [confirmationModal, setConfirmationModal] = useState(false);
   const [tokenDetails, setTokenDetails] = useState<TokenInput>({});
+  const [isEditMode, setIsEditMode] = useState<boolean>(false);
+  const [editData, setEditData] = useState<TokenInput>({})
   const { tokens, loading } = useSelector((state: RootState) => state.tokens);
+  const [api, contextHolder] = notification.useNotification();
 
   const dispatch: AppDispatch = useDispatch();
 
@@ -80,9 +79,36 @@ const TokenRequestTable = ({ tokenRequests }: { tokenRequests: TokenRequest[] })
     }
   }
 
-  const handleViewDetail = (tokenData: TokenRequest) => {
-    setTokenDetails(tokenData);
-    setConfirmationModal(true);
+  const handleDeleteToken = async (tokenId: string) => {
+    const response = await dispatch(deleteToken(tokenId)).unwrap();
+    if(response.tokenId) {
+      api.success({
+        message: '',
+        description: response.message,
+      })
+    }
+  }
+
+  const handleActionClick = async (tokenData: TokenRequest, type: string) => {
+    switch(type) {
+      case 'view_detail':
+        setTokenDetails(tokenData);
+        setConfirmationModal(true);
+        break;
+
+      case 'edit_icon':
+        setEditData(tokenData);
+        setIsEditMode(true);
+        setIsModalOpen(true);
+        break;
+      case 'delete_icon':
+        if(tokenData.id) {
+          await handleDeleteToken(tokenData.id);
+        }
+        break;
+      default:
+        return;
+    }
   }
 
   // Table columns
@@ -166,14 +192,18 @@ const TokenRequestTable = ({ tokenRequests }: { tokenRequests: TokenRequest[] })
         : <Button type="primary" danger onClick={() => handleReturnDone(record.id as string)}>Return</Button>),
     },
     {
-      title: "View Detail",
+      title: "Actions",
       align: 'center',
-      dataIndex: "view_detail",
-      key: "view_details",
+      dataIndex: "action",
+      key: "action",
       fixed: 'right',
       width: 100,
       render: (_, record) => (
-        <Image className='view-detail' alt='payment-done' src={viewDetailIcon} onClick={() => handleViewDetail(record)}  height={25} width={22} />
+        <div className='action-container'>
+          <Image className='view-detail' alt='payment-done' src={viewDetailIcon} onClick={() => handleActionClick(record, 'view_detail')}  height={25} width={22} />
+          <Image className='view-detail' alt='payment-done' src={editIcon} onClick={() => handleActionClick(record, 'edit_icon')}  height={25} width={25} />
+          <Image className='view-detail' alt='payment-done' src={deleteIcon} onClick={() => handleActionClick(record, 'delete_icon')}  height={25} width={25} />
+        </div>
       ),
     },
     
@@ -217,6 +247,7 @@ const TokenRequestTable = ({ tokenRequests }: { tokenRequests: TokenRequest[] })
 
   return (
     <div className='tokens-table-container'>
+      {contextHolder}
       <div className='search-bar-continer' style={{ margin: '16px auto' }}>
         <Input
           className='search-bar'
@@ -255,8 +286,11 @@ const TokenRequestTable = ({ tokenRequests }: { tokenRequests: TokenRequest[] })
         setIsModalOpen={setIsModalOpen} 
         setConfirmationModal={setConfirmationModal}
         setTokenDetails={setTokenDetails}
+        isEditMode={isEditMode}
+        setEditData={setEditData}
+        formData={editData}
        />
-      <TokenConfimrationModal 
+      <TokenConfirmationModal
         confirmationModal={confirmationModal}
         setConfirmationModal={setConfirmationModal}
         tokenDetails={tokenDetails}

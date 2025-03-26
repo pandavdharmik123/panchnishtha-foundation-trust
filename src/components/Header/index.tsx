@@ -28,8 +28,8 @@ const HeaderComponent: React.FC = () => {
 
   return (
     <>
-      <span className='trust-header'>પંચનિષ્ઠા ફાઉન્ડેશન ટ્રસ્ટ</span>
-      {/* <span className='trust-header'>RUGGED MONITORING (RMES)</span> */}
+      {/*<span className='trust-header'>પંચનિષ્ઠા ફાઉન્ડેશન ટ્રસ્ટ</span>*/}
+       <span className='trust-header'>RUGGED MONITORING (RMES)</span>
       
       <Tooltip title='Log Out' placement="top">
         <LogoutOutlined onClick={handleLogout} className='logout-icon'/>

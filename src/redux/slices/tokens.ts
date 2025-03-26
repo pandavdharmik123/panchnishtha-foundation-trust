@@ -79,7 +79,7 @@ export const createToken = createAsyncThunk<
 
 // ✅ Async thunk for updating a token
 export const updateToken = createAsyncThunk<
-  {updatedToken: TokenRequest},
+  { message: string, updatedToken: TokenRequest},
   { tokenId: string; data: TokenRequest },
   { rejectValue: string }
 >(
@@ -91,6 +91,23 @@ export const updateToken = createAsyncThunk<
     } catch (error: unknown) {
       const axiosError = error as AxiosError<{ error: string }>;
       return rejectWithValue(axiosError.response?.data?.error || "Token update failed");
+    }
+  }
+);
+
+export const deleteToken = createAsyncThunk<
+  { message: string, tokenId: string},
+  string,
+  { rejectValue: string }
+>(
+  "tokens/deleteToken",
+  async (tokenId, { rejectWithValue }) => {
+    try {
+      const response = await axiosInstance.delete(`/tokens/${tokenId}`);
+      return response.data;
+    } catch (error: unknown) {
+      const axiosError = error as AxiosError<{ error: string }>;
+      return rejectWithValue(axiosError.response?.data?.error || "Token Delete failed!");
     }
   }
 );
@@ -132,7 +149,6 @@ const tokenSlice = createSlice({
       })
       .addCase(updateToken.fulfilled, (state, action: PayloadAction<{updatedToken : TokenRequest}>) => {
         const updatedToken = action.payload?.updatedToken;
-        console.log('updatedToken==', updatedToken);
         if (updatedToken) {
 
           state.tokens = state.tokens.map(token =>
@@ -142,6 +158,21 @@ const tokenSlice = createSlice({
         state.loading = false;
       })
       .addCase(updateToken.rejected, (state, action: PayloadAction<string | undefined>) => {
+        state.loading = false;
+        state.error = action.payload || "Token update failed";
+      })
+      .addCase(deleteToken.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(deleteToken.fulfilled, (state, action: PayloadAction<{tokenId : string}>) => {
+        const deletedTokenId = action.payload?.tokenId;
+        if (deletedTokenId) {
+          state.tokens = state.tokens.filter(token => token.id !== deletedTokenId);
+        }
+        state.loading = false;
+      })
+      .addCase(deleteToken.rejected, (state, action: PayloadAction<string | undefined>) => {
         state.loading = false;
         state.error = action.payload || "Token update failed";
       });

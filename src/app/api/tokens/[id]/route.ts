@@ -11,7 +11,6 @@ export async function PATCH(req: Request) {
       }
 
     const body = await req.json();
-    console.log('Request body:', body);
 
     const updatedToken = await prisma.tokenRequest.update({
       where: { id },
@@ -34,5 +33,31 @@ export async function PATCH(req: Request) {
   } catch (error) {
     console.error('Error updating token:', error);
     return NextResponse.json({ error: 'Database update failed' }, { status: 500 });
+  }
+}
+
+export async function DELETE(req: Request) {
+  try {
+    const url = new URL(req.url);
+    const id = url.pathname.split('/').pop();
+
+    if (!id) {
+      return NextResponse.json({ error: 'Token ID is required' }, { status: 400 });
+    }
+
+    const tokenDetails = await  prisma.tokenRequest.findUnique({ where: { id: id } });
+
+    if(!tokenDetails) {
+      return NextResponse.json({ message: `Token doesn't exist with tokenId: ${id}` }, { status: 404 });
+    }
+
+    await prisma.tokenRequest.delete({
+      where: { id }
+    });
+
+    return NextResponse.json({ message: 'Token deleted successfully!', tokenId: id }, { status: 200 });
+  } catch (error) {
+    console.error('Error updating token:', error);
+    return NextResponse.json({ error: 'Delete token failed' }, { status: 500 });
   }
 }
