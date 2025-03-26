@@ -136,7 +136,6 @@ const TokenRequestTable = ({ tokenRequests }: { tokenRequests: TokenRequest[] })
       key: "name",
       sorter: (a, b) => a.name?.localeCompare(b.name as string) || 0,
     },
-    
     {
       title: "Document Type",
       align: 'center',
@@ -206,7 +205,6 @@ const TokenRequestTable = ({ tokenRequests }: { tokenRequests: TokenRequest[] })
         </div>
       ),
     },
-    
   ];
 
   const onChange: DatePickerProps['onChange'] = (_, dateString) => {

@@ -56,7 +56,7 @@ const TokenConfirmationModal = ({
         </div>
         {!isEmpty(tokenDetails) && (
           <div className="token-detail">
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontWeight: 'bold' }}>
+            <div className='token-detail-header'>
               <span>ટોકન નંબર: {tokenDetails.tokenNumber}</span>
               <span>ટોકન તારીખ: {tokenDetails.createdAt && formatDate(tokenDetails.createdAt)}</span>
             </div>
@@ -67,7 +67,7 @@ const TokenConfirmationModal = ({
             <span className='footer-text'>ફોર્મ પરત લેવા માટે ટોકન ફરજીયાત સાથે લાવવું.</span>
           </div>
         )}
-        <div style={{ display: 'flex', flexDirection: 'column', textAlign: 'center', fontWeight: 'bold' }}>
+        <div className='token-info-footer'>
           <span>વધુ માહિતી માટે તમારા મોબઈલ માં આજે જ આ નંબર સેવ કરી લો.</span>
           <span>+91 88 66 41 67 67</span>
         </div>
