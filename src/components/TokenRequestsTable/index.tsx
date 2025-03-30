@@ -268,7 +268,7 @@ const TokenRequestTable = ({ tokenRequests }: { tokenRequests: TokenRequest[] })
           Create Token
         </Button>
       </div>
-      
+
       <Table
         loading={loading}
         columns={columns}
@@ -281,14 +281,15 @@ const TokenRequestTable = ({ tokenRequests }: { tokenRequests: TokenRequest[] })
         }}
       />
 
-      <CreateTokenModal 
-        isModalOpen={isModalOpen} 
-        setIsModalOpen={setIsModalOpen} 
+      <CreateTokenModal
+        isModalOpen={isModalOpen}
+        setIsModalOpen={setIsModalOpen}
         setConfirmationModal={setConfirmationModal}
         setTokenDetails={setTokenDetails}
         isEditMode={isEditMode}
         setEditData={setEditData}
         formData={editData}
+        setIsEditMode={setIsEditMode}
        />
       <TokenConfirmationModal
         confirmationModal={confirmationModal}

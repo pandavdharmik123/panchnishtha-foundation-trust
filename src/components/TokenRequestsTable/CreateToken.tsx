@@ -17,6 +17,7 @@ interface CreateTokenInterface {
   setIsModalOpen: (arg: boolean) => void;
   setTokenDetails: (arg: TokenRequest) => void;
   setEditData?: (arg: TokenRequest) => void;
+  setIsEditMode?: (arg: boolean) => void;
   isEditMode?: boolean;
   formData?: TokenRequest;
 }
@@ -29,6 +30,7 @@ const CreateTokenModal = ({
   isEditMode = false,
   formData = {},
   setEditData = () => {},
+  setIsEditMode = () => {}
 }: CreateTokenInterface) => {
   const [paymentMode, setPaymentMode] = useState("CASH");
   const [selectedDocument, setSelectedDocument] = useState("");
@@ -59,6 +61,7 @@ const CreateTokenModal = ({
     form.resetFields();
     setIsModalOpen(false);
     setEditData({});
+    setIsEditMode(false);
   };
 
   const handleCreateToken = async () => {
