@@ -165,6 +165,8 @@ const TokenRequestTable = ({ tokenRequests }: { tokenRequests: TokenRequest[] })
       filters: [
         { text: "Cash", value: "CASH" },
         { text: "Online", value: "ONLINE" },
+        { text: "Free", value: "FREE" },
+        { text: "Pending", value: "PENDING" },
       ],
       onFilter: (value, record) => record.paymentMode === value,
     },

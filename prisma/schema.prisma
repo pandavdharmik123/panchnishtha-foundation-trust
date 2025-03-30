@@ -22,7 +22,7 @@ model User {
 model TokenRequest {
   id            String      @id @default(uuid())
   tokenNumber   Int         @unique @default(autoincrement())
-  name          String      @unique
+  name          String
   documentType  String
   mobileNumber  String
   isPaymentDone Boolean     @default(false)
@@ -38,7 +38,7 @@ model TokenRequest {
 model Expense {
   id            String      @id @default(uuid())
   expenseNumber Int         @unique @default(autoincrement())
-  description   String      @unique
+  description   String
   amount        Int         @default(0)
   expenseDate   DateTime    @default(now())
   createdAt     DateTime    @default(now())
