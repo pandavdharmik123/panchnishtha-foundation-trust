@@ -135,7 +135,7 @@ const ExpensesTable = ({ expensesData }: { expensesData: ExpenseRequest[] }) => 
         if(dateString) {
             const filtered = data.filter(
                 (item) => {
-                    const selectedDate = new Date(item.createdAt as Date).toLocaleDateString("en-GB", {
+                    const selectedDate = new Date(item.expenseDate as Date).toLocaleDateString("en-GB", {
                         day: "2-digit",
                         month: "2-digit",
                         year: "numeric",
@@ -223,18 +223,9 @@ const ExpensesTable = ({ expensesData }: { expensesData: ExpenseRequest[] }) => 
             <CreateExpenseModal
                 isModalOpen={isModalOpen}
                 setIsModalOpen={setIsModalOpen}
-                // setConfirmationModal={setConfirmationModal}
-                // setExpenseDetails={setExpenseDetails}
-                // isEditMode={isEditMode}
                 setEditData={setEditData}
                 formData={editData}
             />
-            {/*<ExpenseConfirmationModal*/}
-            {/*    confirmationModal={confirmationModal}*/}
-            {/*    setConfirmationModal={setConfirmationModal}*/}
-            {/*    tokenDetails={tokenDetails}*/}
-            {/*    setExpenseDetails={setExpenseDetails}*/}
-            {/*/>*/}
         </div>
     );
 };
