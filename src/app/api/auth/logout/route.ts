@@ -1,7 +1,7 @@
-import { NextResponse } from "next/server";
+import {NextRequest, NextResponse} from "next/server";
 
-export async function GET() {
-  const response = NextResponse.redirect(new URL("/login", process.env.NEXT_PUBLIC_BASE_URL));
+export async function GET(request: NextRequest) {
+  const response = NextResponse.redirect(new URL("/login", request.nextUrl.origin));
 
   // ✅ Remove token by setting an expired cookie
   response.cookies.set("token", "", {
