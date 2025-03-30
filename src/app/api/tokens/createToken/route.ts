@@ -22,7 +22,7 @@ export async function POST(req: Request) {
       returnDate
     } = await req.json();
 
-    if(!name || !documentType || !mobileNumber || !paymentMode || !amount) {
+    if(!name || !documentType || !mobileNumber || !paymentMode) {
       return NextResponse.json({ error: "Fill all the required fields" }, { status: 400 });
     }
 

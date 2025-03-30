@@ -100,12 +100,12 @@ const CreateTokenModal = ({
       }
     } catch (e) {
       console.log(e);
-      api.error({
-        message: "",
-        description: "Token update fail!",
-      });
-      form.resetFields();
-      setIsModalOpen(false);
+      // api.error({
+      //   message: "",
+      //   description: "Token update fail!",
+      // });
+      // form.resetFields();
+      // setIsModalOpen(false);
     }
   };
 
@@ -196,8 +196,17 @@ const CreateTokenModal = ({
           <Form.Item
             name="amount"
             label="Amount"
+            initialValue={0}
             rules={[
-              { required: true, message: "Enter amount" },
+              {
+                validator: (_, value) => {
+                  const paymentMode = form.getFieldValue('paymentMode');
+                  if (paymentMode !== 'FREE' && (!value || Number(value) <= 0)) {
+                    return Promise.reject(new Error('Enter amount'));
+                  }
+                  return Promise.resolve();
+                },
+              },
               { pattern: /^\d+$/, message: "Only numeric values are allowed" },
             ]}
           >
