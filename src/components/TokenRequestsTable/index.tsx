@@ -1,7 +1,7 @@
 "use client"; // Required for Next.js App Router if using hooks
 
 import { PlusOutlined, SearchOutlined } from "@ant-design/icons";
-import {Table, Input, Button, DatePicker, DatePickerProps, Tooltip, notification} from "antd";
+import {Table, Input, Button, DatePicker, DatePickerProps, Tooltip, notification, Popconfirm} from "antd";
 import type { ColumnsType } from "antd/es/table";
 import { useEffect, useState } from "react";
 import './index.scss';
@@ -203,7 +203,16 @@ const TokenRequestTable = ({ tokenRequests }: { tokenRequests: TokenRequest[] })
         <div className='action-container'>
           <Image className='view-detail' alt='payment-done' src={viewDetailIcon} onClick={() => handleActionClick(record, 'view_detail')}  height={25} width={22} />
           <Image className='view-detail' alt='payment-done' src={editIcon} onClick={() => handleActionClick(record, 'edit_icon')}  height={25} width={25} />
-          <Image className='view-detail' alt='payment-done' src={deleteIcon} onClick={() => handleActionClick(record, 'delete_icon')}  height={25} width={25} />
+
+          <Popconfirm
+            title="Delete the token"
+            description="Are you sure to delete this token?"
+            onConfirm={() => handleActionClick(record, 'delete_icon')}
+            okText="Yes"
+            cancelText="No"
+          >
+            <Image className='view-detail' alt='payment-done' src={deleteIcon} height={25} width={25} />
+          </Popconfirm>
         </div>
       ),
     },
