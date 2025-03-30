@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcrypt";
-import { sign } from '../../../../lib/commonFunction';
+import { sign } from '@/lib/commonFunction';
 
 const prisma = new PrismaClient();
 const JWT_SECRET = process.env.JWT_SECRET!;
@@ -12,7 +12,7 @@ export async function POST(req: Request) {
   try {
     const { email, password } = await req.json();
 
-    const user = await prisma.user.findUnique({ where: { email } });
+    const user = await prisma.user.findFirst({ where: { email } });
     if (!user || !(await bcrypt.compare(password, user.password))) {
       return NextResponse.json({ error: "Invalid credentials" }, { status: 401 });
     }

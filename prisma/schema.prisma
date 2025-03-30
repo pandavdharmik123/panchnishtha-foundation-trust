@@ -10,7 +10,7 @@ datasource db {
 
 model User {
   id           String         @id @default(uuid())
-  email        String         @unique
+  email        String
   password     String
   role         Role           @default(USER)
   mobileNumber String
@@ -35,10 +35,20 @@ model TokenRequest {
   createdAt     DateTime    @default(now())
 }
 
+model Expense {
+  id            String      @id @default(uuid())
+  expenseNumber Int         @unique @default(autoincrement())
+  description   String      @unique
+  amount        Int         @default(0)
+  expenseDate   DateTime    @default(now())
+  createdAt     DateTime    @default(now())
+}
+
 enum PaymentMode {
   ONLINE
   CASH
   FREE
+  PENDING
 }
 
 enum Role {

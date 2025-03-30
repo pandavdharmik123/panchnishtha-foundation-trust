@@ -8,10 +8,12 @@ const JWT_SECRET = process.env.JWT_SECRET!;
 
 export async function POST(req: Request) {
   try {
-    const { email, password, role, mobileNumber, dateofBirth } = await req.json();
+    const body = await req.json();
+    console.log('bosy--', body);
+    const { email, password, role, mobileNumber, dateofBirth } = body;
 
     // Check if user already exists
-    const existingUser = await prisma.user.findUnique({ where: { email } });
+    const existingUser = await prisma.user.findFirst({ where: { email } });
     if (existingUser) {
       return NextResponse.json({ error: "User already exists" }, { status: 400 });
     }
@@ -41,6 +43,8 @@ export async function POST(req: Request) {
       },
     });
 
+    console.log("newUser created:", newUser);
+
     // Generate JWT Token
     const token = jwt.sign({ id: newUser.id, role: newUser.role }, JWT_SECRET, { expiresIn: "1h" });
 
@@ -49,7 +53,7 @@ export async function POST(req: Request) {
       role: newUser.role, 
       mobileNumber: newUser.mobileNumber,
       dateofBirth: newUser.dateofBirth,
-      token 
+      token
     });
   } catch (error) {
     console.error("Signup error:", error);

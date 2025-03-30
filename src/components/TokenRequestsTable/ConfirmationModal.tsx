@@ -52,7 +52,8 @@ const TokenConfirmationModal = ({
     >
       <div ref={contentRef} className='print-reference'>
         <div className="image-container">
-          <Image height={150} width={250} src={'/images/trust_logo.png'} alt="GIF" />
+          <Image height={120} width={130} src={'/images/trust_icon.png'} alt="GIF" />
+          <span className='trust-name'>પંચનિષ્ઠા ફાઉન્ડેશન ટ્રસ્ટ</span>
         </div>
         {!isEmpty(tokenDetails) && (
           <div className="token-detail">
@@ -62,7 +63,7 @@ const TokenConfirmationModal = ({
             </div>
             <span>નામ: {tokenDetails.name}</span>
             <span>ડોક્યુમેન્ટ નો પ્રકાર: {tokenDetails.documentType && getDocumentType(tokenDetails.documentType)}</span>
-            <span>રકમ: ₹{tokenDetails.amount}</span>
+            <span>રકમ: ₹{tokenDetails.amount} {!tokenDetails.isPaymentDone && tokenDetails.paymentMode === "PENDING" ? '- બાકી' : ''}</span>
             <span>ફોર્મ પરત લેવા નો સમય: {tokenDetails.returnDate && formatDate(tokenDetails.returnDate)} રાત્રે 10:00 થી 11:00 વાગ્યા સુધી </span>
             <span className='footer-text'>ફોર્મ પરત લેવા માટે ટોકન ફરજીયાત સાથે લાવવું.</span>
           </div>

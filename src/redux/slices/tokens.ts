@@ -22,6 +22,7 @@ export enum PaymentMode {
   CASH = "CASH",
   FREE = "FREE",
   ONLINE = "ONLINE",
+  PENDING = "PENDING",
 }
 
 export interface User {

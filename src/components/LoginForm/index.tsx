@@ -16,25 +16,20 @@ const LoginForm: React.FC = () => {
 
   const handleLogin = async (values: {email: string, password: string}) => {
     try {
-      // let { email } = values;
       const { email, password} = values;
-      // if(email.includes('@pannishthafoundation.com')) {
-      //   email = email.replace('@pannishthafoundation.com', '');
-      // } else {
-      //   email = email + '@pannishthafoundation.com';
-      // };
   
       const result: UserResponse = await dispatch(loginUser({ email, password })).unwrap();
-      if(result.success === true && result.token) {
-        await api.success({
+      if(result.success && result.token) {
+        api.success({
           message: '',
           description: 'Login Successfully!',
         });
-        localStorage.setItem("userId", result.userId)
-        localStorage.setItem("userEmail", result.userEmail)
+        localStorage.setItem("userId", result.userId);
+        localStorage.setItem("userEmail", result.userEmail);
+
         setTimeout(() => {
           router.push('/');
-        }, 1000);
+        }, 400);
       }
     } catch (error: unknown) { // ✅ Fixed: Removed `any`, using `unknown`
       let errorMessage = "An unknown error occurred";

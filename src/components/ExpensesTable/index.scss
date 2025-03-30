@@ -25,6 +25,14 @@
   .ant-table-body {
     overflow: auto !important;
 
+    //.ant-table-tbody {
+    //  min-height: 500px;
+    //}
+
+    .ant-table-cell {
+      height: 50px;
+    }
+
     .action-container {
       display: flex;
       align-items: center;
@@ -33,6 +41,11 @@
       .view-detail {
         cursor: pointer;
       }
+    }
+
+    .summery-row {
+      font-weight: bold;
+      text-align: center;
     }
 
   }

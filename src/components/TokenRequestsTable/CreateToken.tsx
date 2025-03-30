@@ -8,6 +8,7 @@ import {useEffect, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import dayjs from "dayjs";
 import "./index.scss";
+import { Scrollbar } from 'react-scrollbars-custom';
 import {isEmpty} from "lodash";
 
 interface CreateTokenInterface {
@@ -46,7 +47,7 @@ const CreateTokenModal = ({
         ...formData,
         returnDate: dayjs(formData.returnDate),
         paymentMode: formData.paymentMode || "CASH",
-        amount: formData.amount ?? 0,
+        amount: formData.amount || 0,
         documentType: documentType,
         otherDocumentType: formData.documentType === "other" ? "" : formData.documentType,
       });
@@ -108,6 +109,7 @@ const CreateTokenModal = ({
   return (
     <Modal
       title={isEditMode ? "Update Token" : "Create Token"}
+      className='create-token-modal'
       open={isModalOpen}
       onClose={handleCancel}
       onCancel={handleCancel}
@@ -118,117 +120,120 @@ const CreateTokenModal = ({
       }}
     >
       {contextHolder}
-      <Form form={form} layout="vertical">
-        <Form.Item
-          name="documentType"
-          label="Document Type"
-          rules={[{ required: true, message: "Please select a document type" }]}
-        >
-          <Select
-            placeholder="Select Document Type"
-            onChange={(value) => {
-              setSelectedDocument(value);
-              const paymentMode = form.getFieldValue("paymentMode");
-              form.setFieldsValue({
-                amount:
-                  paymentMode === "FREE"
-                    ? 0
-                    : documentOptions.find((doc) => doc.value === value)?.amount || 0,
-              });
-            }}
-            allowClear
-          >
-            {documentOptions.map((document) => {
-              return (
-                <Select.Option key={document.value} value={document.value}>
-                  {document.label}
-                </Select.Option>
-              );
-            })}
-          </Select>
-        </Form.Item>
-
-        {selectedDocument === "other" && (
+      <Scrollbar style={{ width: 'auto', height: 400 }}>
+        <Form form={form} layout="vertical">
           <Form.Item
-            name="otherDocumentType"
-            label="Specify Document Type"
-            rules={[{ required: true, message: "Please enter document type" }]}
+            name="documentType"
+            label="Document Type"
+            rules={[{ required: true, message: "Please select a document type" }]}
           >
-            <Input placeholder="Enter document type" />
-          </Form.Item>
-        )}
-        <Form.Item
-          name="name"
-          label="Name"
-          rules={[{ required: true, message: "Please enter name" }]}
-        >
-          <Input />
-        </Form.Item>
-        <Form.Item
-          name="mobileNumber"
-          label="Mobile Number"
-          rules={[
-            { required: true, message: "Enter mobile number" },
-            { pattern: /^[6-9]\d{9}$/, message: "Enter a valid 10-digit mobile number" },
-          ]}
-        >
-          <Input
-            type="tel"
-            addonBefore="+91"
-            maxLength={10}
-            placeholder="Enter 10-digit mobile number"
-            onKeyPress={(event) => {
-              if (!/^\d$/.test(event.key)) {
-                event.preventDefault();
-              }
-            }}
-            onChange={(event) => {
-              event.target.value = event.target.value.replace(/\D/g, "");
-            }}
-          />
-        </Form.Item>
-        <Form.Item
-          name="amount"
-          label="Amount"
-          rules={[
-            { required: true, message: "Enter amount" },
-            { pattern: /^\d+$/, message: "Only numeric values are allowed" },
-          ]}
-        >
-          <Input addonBefore="₹" disabled={selectedDocument !== "other"} />
-        </Form.Item>
-
-        <div className="div-wrapper">
-          <Form.Item className="input" label="Payment Mode" name="paymentMode" initialValue="CASH">
             <Select
-              value={paymentMode}
+              placeholder="Select Document Type"
               onChange={(value) => {
-                setPaymentMode(value);
-                if (value === "FREE") {
-                  form.setFieldsValue({ amount: 0 });
-                } else {
-                  const documentType = form.getFieldValue("documentType");
-                  form.setFieldsValue({
-                    amount: documentOptions.find((doc) => doc.value === documentType)?.amount || 0,
-                  });
-                }
+                setSelectedDocument(value);
+                const paymentMode = form.getFieldValue("paymentMode");
+                form.setFieldsValue({
+                  amount:
+                    paymentMode === "FREE"
+                      ? 0
+                      : documentOptions.find((doc) => doc.value === value)?.amount || 0,
+                });
               }}
+              allowClear
             >
-              <Select.Option value="ONLINE">Online</Select.Option>
-              <Select.Option value="CASH">Cash</Select.Option>
-              <Select.Option value="FREE">Free</Select.Option>
+              {documentOptions.map((document) => {
+                return (
+                  <Select.Option key={document.value} value={document.value}>
+                    {document.label}
+                  </Select.Option>
+                );
+              })}
             </Select>
           </Form.Item>
+
+          {selectedDocument === "other" && (
+            <Form.Item
+              name="otherDocumentType"
+              label="Specify Document Type"
+              rules={[{ required: true, message: "Please enter document type" }]}
+            >
+              <Input placeholder="Enter document type" />
+            </Form.Item>
+          )}
           <Form.Item
-            className="input"
-            initialValue={dayjs().add(1, "day")}
-            label="Return Date"
-            name="returnDate"
+            name="name"
+            label="Name"
+            rules={[{ required: true, message: "Please enter name" }]}
           >
-            <DatePicker className="date-picker" format={"DD/MM/YYYY"} />
+            <Input />
           </Form.Item>
-        </div>
-      </Form>
+          <Form.Item
+            name="mobileNumber"
+            label="Mobile Number"
+            rules={[
+              { required: true, message: "Enter mobile number" },
+              { pattern: /^[6-9]\d{9}$/, message: "Enter a valid 10-digit mobile number" },
+            ]}
+          >
+            <Input
+              type="tel"
+              addonBefore="+91"
+              maxLength={10}
+              placeholder="Enter 10-digit mobile number"
+              onKeyPress={(event) => {
+                if (!/^\d$/.test(event.key)) {
+                  event.preventDefault();
+                }
+              }}
+              onChange={(event) => {
+                event.target.value = event.target.value.replace(/\D/g, "");
+              }}
+            />
+          </Form.Item>
+          <Form.Item
+            name="amount"
+            label="Amount"
+            rules={[
+              { required: true, message: "Enter amount" },
+              { pattern: /^\d+$/, message: "Only numeric values are allowed" },
+            ]}
+          >
+            <Input addonBefore="₹" disabled={selectedDocument !== "other"} />
+          </Form.Item>
+
+          <div className="div-wrapper">
+            <Form.Item className="input" label="Payment Mode" name="paymentMode" initialValue="CASH">
+              <Select
+                value={paymentMode}
+                onChange={(value) => {
+                  setPaymentMode(value);
+                  if (value === "FREE") {
+                    form.setFieldsValue({ amount: 0 });
+                  } else {
+                    const documentType = form.getFieldValue("documentType");
+                    form.setFieldsValue({
+                      amount: documentOptions.find((doc) => doc.value === documentType)?.amount || 0,
+                    });
+                  }
+                }}
+              >
+                <Select.Option value="ONLINE">Online</Select.Option>
+                <Select.Option value="CASH">Cash</Select.Option>
+                <Select.Option value="FREE">Free</Select.Option>
+                <Select.Option value="PENDING">Pending</Select.Option>
+              </Select>
+            </Form.Item>
+            <Form.Item
+              className="input"
+              initialValue={dayjs().add(1, "day")}
+              label="Return Date"
+              name="returnDate"
+            >
+              <DatePicker className="date-picker" format={"DD/MM/YYYY"} />
+            </Form.Item>
+          </div>
+        </Form>
+      </Scrollbar>
     </Modal>
   );
 };

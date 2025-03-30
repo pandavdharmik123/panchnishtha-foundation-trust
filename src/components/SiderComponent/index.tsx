@@ -3,6 +3,7 @@
 import React from 'react';
 import {
   BarChartOutlined,
+  DollarOutlined,
   UserOutlined,
 } from '@ant-design/icons';
 import { Menu } from 'antd';
@@ -11,7 +12,7 @@ import { useRouter, usePathname } from 'next/navigation';
 const items = [
   { key: '/', icon: <UserOutlined />, label: 'Dashboard' },
   { key: '/tokens', icon: <BarChartOutlined />, label: 'Tokens' },
-  // { key: '/analytics', icon: <CloudOutlined />, label: 'Analytics' },
+  { key: '/expenses', icon: <DollarOutlined />, label: 'Expenses' },
   // { key: '/users', icon: <TeamOutlined />, label: 'Users' },
 ];
 
