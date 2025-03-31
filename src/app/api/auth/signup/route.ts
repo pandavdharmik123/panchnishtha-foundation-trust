@@ -9,7 +9,6 @@ const JWT_SECRET = process.env.JWT_SECRET!;
 export async function POST(req: Request) {
   try {
     const body = await req.json();
-    console.log('bosy--', body);
     const { email, password, role, mobileNumber, dateofBirth } = body;
 
     // Check if user already exists
@@ -46,7 +45,7 @@ export async function POST(req: Request) {
     console.log("newUser created:", newUser);
 
     // Generate JWT Token
-    const token = jwt.sign({ id: newUser.id, role: newUser.role }, JWT_SECRET, { expiresIn: "1h" });
+    const token = jwt.sign({ id: newUser.id, role: newUser.role }, JWT_SECRET, { expiresIn: "4h" });
 
     return NextResponse.json({ 
       userName: newUser.email, 

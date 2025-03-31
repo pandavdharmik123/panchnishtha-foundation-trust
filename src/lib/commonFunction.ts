@@ -13,7 +13,7 @@ interface excelTokenRequest {
 
 export async function sign(payload: User, secret: string): Promise<string> {
   const iat = Math.floor(Date.now() / 1000);
-  const exp = iat + 60* 60; // one hour
+  const exp = iat + 60 * 60 * 4;  // four hour
 
   return new SignJWT({...payload})
       .setProtectedHeader({alg: 'HS256', typ: 'JWT'})
