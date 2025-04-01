@@ -4,12 +4,13 @@ import {documentOptions} from "@/lib/commonFunction";
 import {createToken, TokenRequest, updateToken} from "@/redux/slices/tokens";
 import {AppDispatch, RootState} from "@/redux/store";
 import {DatePicker, Form, Input, Modal, notification, Select} from "antd";
-import {ReactNode, useEffect, useRef, useState} from "react";
+import {useEffect, useRef, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import dayjs from "dayjs";
 import "./index.scss";
 import { Scrollbar } from 'react-scrollbars-custom';
 import {isEmpty} from "lodash";
+import {BaseSelectRef} from "rc-select";
 
 interface CreateTokenInterface {
   setConfirmationModal: (arg: boolean) => void;
@@ -36,7 +37,7 @@ const CreateTokenModal = ({
   const [selectedDocument, setSelectedDocument] = useState("");
   const [form] = Form.useForm();
   const [api, contextHolder] = notification.useNotification();
-  const firstInputRef = useRef<ReactNode>(null);
+  const firstInputRef = useRef<BaseSelectRef>(null);
 
   const { loading } = useSelector((state: RootState) => state.tokens);
 
