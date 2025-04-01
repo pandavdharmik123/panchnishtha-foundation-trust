@@ -121,6 +121,7 @@ const TokenRequestTable = ({ tokenRequests }: { tokenRequests: TokenRequest[] })
       width: 100,
       fixed: true,
       sorter: (a, b) => (a.tokenNumber as number) - (b.tokenNumber as number),
+      render: (tokenNumber, tokenRequest) => `${tokenNumber}/${new Date(tokenRequest.createdAt as Date).getFullYear()}`
     },
     {
       title: "Token Date",

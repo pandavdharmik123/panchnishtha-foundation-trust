@@ -4,7 +4,7 @@ import {documentOptions} from "@/lib/commonFunction";
 import {createToken, TokenRequest, updateToken} from "@/redux/slices/tokens";
 import {AppDispatch, RootState} from "@/redux/store";
 import {DatePicker, Form, Input, Modal, notification, Select} from "antd";
-import {useEffect, useState} from "react";
+import {ReactNode, useEffect, useRef, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import dayjs from "dayjs";
 import "./index.scss";
@@ -36,10 +36,20 @@ const CreateTokenModal = ({
   const [selectedDocument, setSelectedDocument] = useState("");
   const [form] = Form.useForm();
   const [api, contextHolder] = notification.useNotification();
+  const firstInputRef = useRef<ReactNode>(null);
 
   const { loading } = useSelector((state: RootState) => state.tokens);
 
   const dispatch: AppDispatch = useDispatch();
+
+  useEffect(() => {
+    if (isModalOpen && firstInputRef.current) {
+      // Wait for the modal to render before focusing
+      setTimeout(() => {
+          firstInputRef.current?.focus();
+      }, 100);
+    }
+  }, [isModalOpen]);
 
   useEffect(() => {
     if (isEditMode && !isEmpty(formData) && isModalOpen) {
@@ -131,6 +141,7 @@ const CreateTokenModal = ({
             rules={[{ required: true, message: "Please select a document type" }]}
           >
             <Select
+              ref={firstInputRef}
               placeholder="Select Document Type"
               onChange={(value) => {
                 setSelectedDocument(value);
