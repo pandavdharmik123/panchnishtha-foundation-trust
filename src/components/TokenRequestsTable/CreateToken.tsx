@@ -85,6 +85,7 @@ const CreateTokenModal = ({
         userId: localStorage.getItem("userId"),
         amount: Number(values.amount) || 0,
         returnDate: new Date(values.returnDate),
+        isPaymentDone: values.paymentMode !== "PENDING",
       };
       let response: TokenRequest = {};
 

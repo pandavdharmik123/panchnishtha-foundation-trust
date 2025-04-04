@@ -246,10 +246,13 @@ const TokenRequestTable = ({ tokenRequests }: { tokenRequests: TokenRequest[] })
         tokenNumber: String(value.tokenNumber) || '',
         name: value.name || '',
         mobileNumber: String(value.mobileNumber) || '',
-        paymentType: value.paymentMode || '',
+        paymentMode: value.paymentMode || '',
         amount: String(value.amount) || '',
         documentType: value.documentType ? getDocumentName(value.documentType) : '',
-        payment: value.isPaymentDone ? 'Done' : 'Pending'
+        payment: value.isPaymentDone ? 'Done' : 'Pending',
+        tokenDate: new Date(value.createdAt as Date).toLocaleDateString("en-GB", {}) || '',
+        returnDate: new Date(value.returnDate as Date).toLocaleDateString("en-GB", {}) || '',
+        isReturn: value.isReturn ? 'Yes' : 'No',
       }))
       exportToExcel(data, fileName);
     }
